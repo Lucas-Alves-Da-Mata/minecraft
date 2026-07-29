@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerador de Placeholders</title>
+</head>
+<body>
+    <h1>Gerador de Imagens Placeholder</h1>
+    <p>Abra este arquivo e clique nos botões para gerar imagens placeholder para as peças.</p>
+    
+    <h2>Cabeças</h2>
+    <button onclick="generateHead('head_1', '#c68e5b')">Cabeça 1 (Padrão)</button>
+    <button onclick="generateHead('head_2', '#f0a67a')">Cabeça 2 (Alex)</button>
+    <button onclick="generateHead('head_3', '#8b4513')">Cabeça 3 (Cabelo)</button>
+    
+    <h2>Preview</h2>
+    <canvas id="preview" width="64" height="64"></canvas>
+    
+    <script>
+        function generateHead(id, color) {
+            const canvas = document.getElementById('preview');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear
+            ctx.clearRect(0, 0, 64, 64);
+            
+            // Draw head shape
+            ctx.fillStyle = color;
+            ctx.fillRect(8, 8, 8, 8); // front
+            ctx.fillRect(24, 8, 8, 8); // back
+            ctx.fillRect(16, 8, 8, 8); // left
+            ctx.fillRect(0, 8, 8, 8); // right
+            ctx.fillRect(8, 0, 8, 8); // top
+            ctx.fillRect(16, 0, 8, 8); // bottom
+            
+            // Draw face features
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(10, 10, 2, 2); // left eye
+            ctx.fillRect(14, 10, 2, 2); // right eye
+            
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(11, 10, 1, 1); // left pupil
+            ctx.fillRect(15, 10, 1, 1); // right pupil
+            
+            ctx.fillStyle = '#8b4513';
+            ctx.fillRect(11, 13, 3, 1); // mouth
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = `${id}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>
