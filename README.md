@@ -1,4 +1,4 @@
-# Minecraft Skin Creator
+# Mesa de Craft
 
 Um criador de skins de Minecraft por peças, onde os usuários podem montar suas próprias skins selecionando diferentes partes e cores.
 

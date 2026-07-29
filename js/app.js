@@ -1,414 +1,560 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.getElementById('skinCanvas');
-    skinComposer.init(canvas);
+(function() {
+    'use strict';
 
-    let currentCategory = 'heads';
-    const categoryMap = { heads: 'head', bodies: 'body', arms: 'armR', legs: 'legR' };
+    // ============================================
+    // DATA
+    // ============================================
+    var MOBS_DATA = [
+        { id:'sheep', name:'Sheep', cat:'passive', desc:'Pacífica e fofinha, fornece lã para camas e decoração.', biome:'Planícies, Encostas', threat:1, tl:'low', emoji:'🐑', drops:[{i:'Lã',c:'100%'},{i:'Carneiro Cru',c:'50%'}] },
+        { id:'cow', name:'Cow', cat:'passive', desc:'Fonte de couro e carne. Essencial para iniciar uma fazenda.', biome:'Planícies, Florestas', threat:1, tl:'low', emoji:'🐄', drops:[{i:'Couro',c:'100%'},{i:'Bife Cru',c:'50%'}] },
+        { id:'pig', name:'Pig', cat:'passive', desc:'Montável com uma cenoura. Fornece costeleta de porco.', biome:'Planícies, Florestas', threat:1, tl:'low', emoji:'🐖', drops:[{i:'Costeleta Crua',c:'100%'}] },
+        { id:'chicken', name:'Chicken', cat:'passive', desc:'Solta penas e ovos. Pode ser usada para farms automáticas.', biome:'Planícies, Savanas', threat:1, tl:'low', emoji:'🐔', drops:[{i:'Pena',c:'100%'},{i:'Frango Cru',c:'50%'}] },
+        { id:'axolotl', name:'Axolotl', cat:'passive', desc:'Anfíbio aquatico que ajuda em batalhas subaquáticas.', biome:'Cavernas Lush', threat:1, tl:'low', emoji:'🦎', drops:[] },
+        { id:'glow_squid', name:'Glow Squid', cat:'passive', desc:'Lula brilhante que solta sacos de tinta brilhante.', biome:'Oceanos', threat:1, tl:'low', emoji:'🦑', drops:[{i:'Saco de Tinta Brilhante',c:'100%'}] },
+        { id:'wolf', name:'Wolf', cat:'neutral', desc:'Domesticável com ossos. Protege o jogador contra hostis.', biome:'Florestas, Taigas', threat:3, tl:'medium', emoji:'🐺', drops:[] },
+        { id:'iron_golem', name:'Iron Golem', cat:'neutral', desc:'Protetor de vilas. Causa dano massivo a mobs hostis.', biome:'Vilas', threat:7, tl:'high', emoji:'🗿', drops:[{i:'Ferro',c:'100%'},{i:'Papoula',c:'50%'}] },
+        { id:'panda', name:'Panda', cat:'neutral', desc:'Preguiçoso mas perigoso se irritado.', biome:'Bambuzais', threat:2, tl:'low', emoji:'🐼', drops:[{i:'Bambu',c:'100%'}] },
+        { id:'creeper', name:'Creeper', cat:'hostile', desc:'Explosivo silencioso. Causa dano massivo em área.', biome:'Superfície', threat:8, tl:'high', emoji:'💥', drops:[{i:'Pólvora',c:'100%'},{i:'Disco',c:'8%'}] },
+        { id:'zombie', name:'Zombie', cat:'hostile', desc:'Morto-vivo lento mas persistente. Queima ao sol.', biome:'Superfície, Cavernas', threat:4, tl:'medium', emoji:'🧟', drops:[{i:'Carne Podre',c:'100%'},{i:'Batata',c:'2%'}] },
+        { id:'skeleton', name:'Skeleton', cat:'hostile', desc:'Arqueiro morto-vivo preciso. Ataca a distância.', biome:'Superfície, Cavernas', threat:6, tl:'medium', emoji:'💀', drops:[{i:'Flecha',c:'100%'},{i:'Osso',c:'50%'}] },
+        { id:'strider', name:'Strider', cat:'hostile', desc:'Montável no Nether. Anda sobre lava.', biome:'Nether', threat:3, tl:'medium', emoji:'🕷️', drops:[{i:'Fio',c:'100%'}] },
+        { id:'warden', name:'Warden', cat:'hostile', desc:'Guardião cego das profundezas. Letal!', biome:'Ancient Cities', threat:10, tl:'high', emoji:'👁️', drops:[{i:'Catálise Sculk',c:'100%'}] }
+    ];
 
-    initTemplateCards();
-    initColorPalette();
-    initMobCards();
-    loadParts('heads');
-    skinComposer.loadFromStorage();
+    var MODS_DATA = [
+        { id:'optifine', title:'OptiFine', ver:'1.21', type:'performance', desc:'Otimização gráfica completa. Suporte a shaders e zoom.', loader:'Forge,Fabric', dl:'45M+', emoji:'⚡' },
+        { id:'create', title:'Create', ver:'1.20', type:'tech', desc:'Automação mecânica criativa com engrenagens e correias.', loader:'Forge', dl:'12M+', emoji:'⚙️' },
+        { id:'pixelmon', title:'Pixelmon', ver:'1.20', type:'mobs', desc:'Capture, treine e batalhe com Pokémon no Minecraft.', loader:'Forge', dl:'20M+', emoji:'🔴' },
+        { id:'biomes', title:"Biomes O' Plenty", ver:'1.21', type:'decoration', desc:'Mais de 50 novos biomas exuberantes e únicos.', loader:'Forge,Fabric', dl:'18M+', emoji:'🌿' },
+        { id:'twilight', title:'Twilight Forest', ver:'1.19', type:'dimensions', desc:'Nova dimensão mágica com chefes e masmorras.', loader:'Forge', dl:'15M+', emoji:'🌳' },
+        { id:'sodium', title:'Sodium', ver:'1.21', type:'performance', desc:'Renderizador moderno que dobra o FPS.', loader:'Fabric', dl:'30M+', emoji:'🔆' },
+        { id:'ae2', title:'AE2', ver:'1.20', type:'tech', desc:'Armazenamento avançado com ME Networks.', loader:'Forge', dl:'10M+', emoji:'💾' },
+        { id:'ad_astra', title:'Ad Astra', ver:'1.20', type:'dimensions', desc:'Explore o espaço! Viaje para Lua e Marte.', loader:'Forge,Fabric', dl:'8M+', emoji:'🚀' },
+        { id:'chipped', title:'Chipped', ver:'1.21', type:'decoration', desc:'Centenas de variantes de blocos decorativos.', loader:'Forge,Fabric', dl:'6M+', emoji:'🎨' },
+        { id:'alexs_mobs', title:"Alex's Mobs", ver:'1.20', type:'mobs', desc:'Adiciona 90+ novos mobs inspirados na natureza.', loader:'Forge', dl:'14M+', emoji:'🦁' }
+    ];
 
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(btn.dataset.section).classList.add('active');
+    var FEATURED_SKINS = [
+        { name:'Cavaleiro de Pedra', stars:4.8, dl:'12.4k', color:'#7a7a7a' },
+        { name:'Hoodie Guy', stars:4.6, dl:'8.7k', color:'#4a7a9a' },
+        { name:'Zumbi', stars:4.3, dl:'6.2k', color:'#3a7a3a' },
+        { name:'Creeper', stars:4.9, dl:'15.1k', color:'#5a7a5a' }
+    ];
+
+    // ============================================
+    // TAB SWITCHER
+    // ============================================
+    function initTabs() {
+        var tabs = document.querySelectorAll('.mc-tab');
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                tabs.forEach(function(t) { t.classList.remove('active'); });
+                tab.classList.add('active');
+                var target = tab.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(function(s) { s.classList.remove('active'); });
+                var el = document.getElementById('tab-' + target);
+                if (el) el.classList.add('active');
+            });
         });
-    });
+    }
 
-    document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentCategory = btn.dataset.category;
-            loadParts(currentCategory);
-            updateColorSelection();
-        });
-    });
+    // ============================================
+    // CANVAS BACKGROUND
+    // ============================================
+    function initBgCanvas() {
+        var canvas = document.getElementById('bg-canvas');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var w, h;
 
-    document.querySelectorAll('.model-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            skinComposer.setModel(btn.dataset.model);
-            skinComposer.saveToStorage();
-        });
-    });
-
-    document.querySelectorAll('.bg-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            skinComposer.setBackground(btn.dataset.bg);
-        });
-    });
-
-    document.querySelectorAll('.anim-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.anim-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            skinComposer.setAnimation(btn.dataset.anim);
-        });
-    });
-
-    document.getElementById('rotateBtn').addEventListener('click', () => {
-        const isRotating = skinComposer.toggleAutoRotate();
-        document.getElementById('rotateBtn').classList.toggle('active', isRotating);
-    });
-
-    document.getElementById('resetBtn').addEventListener('click', () => {
-        skinComposer.resetCamera();
-    });
-
-    document.getElementById('undoBtn').addEventListener('click', () => {
-        if (skinComposer.undo()) showToast('Desfeito');
-    });
-
-    document.getElementById('redoBtn').addEventListener('click', () => {
-        if (skinComposer.redo()) showToast('Refeito');
-    });
-
-    document.getElementById('randomBtn').addEventListener('click', () => {
-        const template = SKIN_TEMPLATES[Math.floor(Math.random() * SKIN_TEMPLATES.length)];
-        skinComposer.loadTemplate(template);
-        updateUIFromState();
-        showToast(`Skin "${template.name}" carregada!`);
-    });
-
-    document.getElementById('clearBtn').addEventListener('click', () => {
-        skinComposer.clearAll();
-        updateUIFromState();
-        showToast('Tudo limpo!');
-    });
-
-    document.getElementById('exportPng').addEventListener('click', async () => {
-        const blob = await skinComposer.exportPNG();
-        downloadBlob(blob, 'minecraft-skin.png');
-        showToast('PNG baixado!');
-    });
-
-    document.getElementById('exportWithBg').addEventListener('click', async () => {
-        const exportCanvas = document.createElement('canvas');
-        exportCanvas.width = 600;
-        exportCanvas.height = 500;
-        const exportCtx = exportCanvas.getContext('2d');
-        exportCtx.drawImage(canvas, 0, 0);
-        exportCanvas.toBlob((blob) => {
-            downloadBlob(blob, 'minecraft-skin-preview.png');
-            showToast('Preview baixado!');
-        });
-    });
-
-    document.getElementById('copySkin').addEventListener('click', async () => {
-        try {
-            const dataURL = skinComposer.exportDataURL();
-            const response = await fetch(dataURL);
-            const blob = await response.blob();
-            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-            showToast('Copiado para area de transferencia!');
-        } catch (error) {
-            const blob = await skinComposer.exportPNG();
-            downloadBlob(blob, 'minecraft-skin-texture.png');
-            showToast('Textura baixada!');
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
         }
-    });
+        resize();
+        window.addEventListener('resize', resize);
 
-    document.getElementById('loadSkinBtn').addEventListener('click', async () => {
-        const playerName = document.getElementById('playerName').value.trim();
-        if (!playerName) { showToast('Digite um nome!'); return; }
-        showToast('Carregando...');
-        const result = await skinComposer.loadFromPlayerName(playerName);
-        if (result.success) showToast('Skin carregada!');
-        else showToast(`Erro: ${result.error}`);
-    });
-
-    document.getElementById('playerName').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') document.getElementById('loadSkinBtn').click();
-    });
-
-    const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('fileInput');
-
-    uploadArea.addEventListener('click', () => fileInput.click());
-    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
-    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-    uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-        const file = e.dataTransfer.files[0];
-        if (file) handleFileUpload(file);
-    });
-
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files[0]) handleFileUpload(e.target.files[0]);
-    });
-
-    async function handleFileUpload(file) {
-        if (!file.type.startsWith('image/')) { showToast('Arquivo invalido!'); return; }
-        showToast('Carregando imagem...');
-        const result = await skinComposer.loadFromFile(file);
-        if (result.success) showToast('Skin carregada!');
-        else showToast(`Erro: ${result.error}`);
-    }
-
-    window.addEventListener('resize', () => {
-        const previewArea = document.querySelector('.preview-area');
-        if (previewArea) skinComposer.resize(previewArea.clientWidth, previewArea.clientHeight);
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'z') { e.preventDefault(); document.getElementById('undoBtn').click(); }
-        if (e.ctrlKey && e.key === 'y') { e.preventDefault(); document.getElementById('redoBtn').click(); }
-        if (e.ctrlKey && e.key === 's') { e.preventDefault(); skinComposer.saveToStorage(); showToast('Salvo!'); }
-    });
-
-    function initTemplateCards() {
-        const grid = document.getElementById('templateGrid');
-        SKIN_TEMPLATES.forEach(template => {
-            const card = document.createElement('div');
-            card.className = 'template-card';
-            card.innerHTML = `
-                <div class="template-preview" style="background: linear-gradient(135deg, ${template.colors.body}, ${template.colors.head})">
-                    <div class="template-figure">
-                        <div class="figure-head" style="background:${template.colors.head}"></div>
-                        <div class="figure-body" style="background:${template.colors.body}"></div>
-                        <div class="figure-arms">
-                            <div class="figure-arm" style="background:${template.colors.armR}"></div>
-                            <div class="figure-arm" style="background:${template.colors.armR}"></div>
-                        </div>
-                        <div class="figure-legs">
-                            <div class="figure-leg" style="background:${template.colors.legR}"></div>
-                            <div class="figure-leg" style="background:${template.colors.legL}"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="template-info">
-                    <h3>${template.name}</h3>
-                    <p>${template.description}</p>
-                    <div class="template-tags">${template.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
-                </div>
-            `;
-            card.addEventListener('click', () => {
-                skinComposer.loadTemplate(template);
-                updateUIFromState();
-                document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
-                card.classList.add('selected');
-                showToast(`"${template.name}" carregado!`);
+        var particles = [];
+        for (var i = 0; i < 80; i++) {
+            particles.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                size: Math.random() * 2 + 0.5,
+                speedX: (Math.random() - 0.5) * 0.3,
+                speedY: (Math.random() - 0.5) * 0.3,
+                hue: Math.random() * 60 + 260, // purple-blue range
+                alpha: Math.random() * 0.3 + 0.1
             });
-            grid.appendChild(card);
-        });
-    }
-
-    function initColorPalette() {
-        const colorOptions = document.getElementById('colorOptions');
-        MINECRAFT_COLORS.forEach((color, index) => {
-            const swatch = document.createElement('div');
-            swatch.className = 'color-swatch';
-            swatch.style.backgroundColor = color;
-            swatch.dataset.color = color;
-            if (index === 0) swatch.classList.add('selected');
-            swatch.addEventListener('click', () => {
-                document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-                swatch.classList.add('selected');
-                applyColor(color);
-            });
-            colorOptions.appendChild(swatch);
-        });
-        document.getElementById('customColor').addEventListener('input', (e) => applyColor(e.target.value));
-    }
-
-    function applyColor(color) {
-        const section = categoryMap[currentCategory];
-        if (section) {
-            skinComposer.setColorAndSave(section, color);
-            if (section === 'armR') skinComposer.setColor('armL', color);
-            if (section === 'legR') skinComposer.setColor('legL', color);
-            updatePartPreviews();
-            skinComposer.saveToStorage();
         }
-    }
 
-    function updateColorSelection() {
-        const section = categoryMap[currentCategory];
-        if (!section) return;
-        const currentColor = skinComposer.currentSkin.colors[section];
-        if (currentColor) {
-            document.querySelectorAll('.color-swatch').forEach(s => {
-                s.classList.toggle('selected', s.dataset.color.toLowerCase() === currentColor.toLowerCase());
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+
+            // Dark gradient background
+            var grad = ctx.createRadialGradient(w/2, h*0.4, 0, w/2, h*0.4, w*0.7);
+            grad.addColorStop(0, '#1a0a2e');
+            grad.addColorStop(0.3, '#0d0520');
+            grad.addColorStop(1, '#050210');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Particles
+            particles.forEach(function(p) {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                if (p.x < 0) p.x = w;
+                if (p.x > w) p.x = 0;
+                if (p.y < 0) p.y = h;
+                if (p.y > h) p.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'hsla(' + p.hue + ', 70%, 60%, ' + p.alpha + ')';
+                ctx.fill();
             });
-            document.getElementById('customColor').value = currentColor;
+
+            requestAnimationFrame(draw);
         }
+        draw();
     }
 
-    function loadParts(category) {
-        const partsGrid = document.getElementById('partsGrid');
-        partsGrid.innerHTML = '';
-        const parts = SKIN_PARTS[category] || [];
-        const section = categoryMap[category];
-        const currentColor = skinComposer.currentSkin.colors[section] || '#c68e5b';
+    // ============================================
+    // HOME - STEVE VIEWER
+    // ============================================
+    function initSteveViewer() {
+        var container = document.getElementById('player-3d');
+        if (!container) return;
+        var canvas = container.querySelector('canvas');
+        if (!canvas) return;
 
-        parts.forEach(part => {
-            const partItem = document.createElement('div');
-            partItem.className = 'part-item';
-            partItem.dataset.partId = part.id;
+        function drawSteve(ctx, w, h) {
+            var s = Math.min(w, h) / 70;
+            var ox = (w - 32 * s) / 2;
+            var oy = (h - 64 * s) / 2;
 
-            const previewImg = document.createElement('img');
-            const partType = category === 'heads' ? 'head' : category === 'bodies' ? 'body' : category === 'arms' ? 'arm' : 'leg';
-            previewImg.src = skinComposer.generatePreview(partType, currentColor);
-            previewImg.alt = part.name;
-            previewImg.className = 'part-preview';
+            ctx.clearRect(0, 0, w, h);
+            // Body
+            ctx.fillStyle = '#4a6a8a';
+            ctx.fillRect(ox + 8*s, oy + 24*s, 16*s, 24*s);
+            // Head
+            ctx.fillStyle = '#c68e5b';
+            ctx.fillRect(ox + 8*s, oy + 4*s, 16*s, 20*s);
+            // Eyes
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(ox + 10*s, oy + 10*s, 4*s, 4*s);
+            ctx.fillRect(ox + 18*s, oy + 10*s, 4*s, 4*s);
+            ctx.fillStyle = '#222';
+            ctx.fillRect(ox + 11*s, oy + 11*s, 2*s, 2*s);
+            ctx.fillRect(ox + 19*s, oy + 11*s, 2*s, 2*s);
+            ctx.fillStyle = '#8b5e3c';
+            ctx.fillRect(ox + 12*s, oy + 18*s, 8*s, 2*s);
+            // Arms
+            ctx.fillStyle = '#4a6a8a';
+            ctx.fillRect(ox + 2*s, oy + 24*s, 6*s, 20*s);
+            ctx.fillRect(ox + 24*s, oy + 24*s, 6*s, 20*s);
+            // Legs
+            ctx.fillStyle = '#3a4a6a';
+            ctx.fillRect(ox + 10*s, oy + 48*s, 6*s, 12*s);
+            ctx.fillRect(ox + 16*s, oy + 48*s, 6*s, 12*s);
+        }
 
-            const label = document.createElement('div');
-            label.className = 'part-label';
-            label.textContent = part.name;
+        function resize() {
+            var rect = container.getBoundingClientRect();
+            canvas.width = rect.width * 2;
+            canvas.height = rect.height * 2;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            drawSteve(canvas.getContext('2d'), canvas.width, canvas.height);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+    }
 
-            partItem.appendChild(previewImg);
-            partItem.appendChild(label);
+    // ============================================
+    // SKINS - FEATURED
+    // ============================================
+    function initFeaturedSkins() {
+        var previews = document.querySelectorAll('.skin-preview');
+        if (!previews.length) return;
 
-            const currentPart = skinComposer.currentSkin.parts[section];
-            if (currentPart === part.id) partItem.classList.add('selected');
+        previews.forEach(function(div, idx) {
+            var skin = FEATURED_SKINS[idx] || { name:'Skin', stars:0, dl:'0', color:'#555' };
+            var c = document.createElement('canvas');
+            c.width = 160; c.height = 160;
+            c.style.width = '100%'; c.style.height = '100%';
+            div.appendChild(c);
+            var ctx = c.getContext('2d');
+            var s = 160;
 
-            partItem.addEventListener('click', () => {
-                document.querySelectorAll('.part-item').forEach(p => p.classList.remove('selected'));
-                partItem.classList.add('selected');
-                skinComposer.setPart(section, part.id);
-                if (section === 'armR') skinComposer.setPart('armL', part.id);
-                if (section === 'legR') skinComposer.setPart('legL', part.id);
-                skinComposer.saveToStorage();
+            ctx.fillStyle = skin.color;
+            ctx.fillRect(0, 0, s, s);
+
+            ctx.fillStyle = '#c68e5b';
+            ctx.fillRect(s*0.25, s*0.1, s*0.5, s*0.3);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(s*0.3, s*0.2, s*0.12, s*0.08);
+            ctx.fillRect(s*0.58, s*0.2, s*0.12, s*0.08);
+            ctx.fillStyle = '#222';
+            ctx.fillRect(s*0.33, s*0.22, s*0.06, s*0.05);
+            ctx.fillRect(s*0.6, s*0.22, s*0.06, s*0.05);
+            ctx.fillStyle = '#4a6a8a';
+            ctx.fillRect(s*0.25, s*0.4, s*0.5, s*0.35);
+            ctx.fillRect(s*0.06, s*0.4, s*0.18, s*0.35);
+            ctx.fillRect(s*0.76, s*0.4, s*0.18, s*0.35);
+            ctx.fillStyle = '#3a4a6a';
+            ctx.fillRect(s*0.3, s*0.75, s*0.18, s*0.25);
+            ctx.fillRect(s*0.52, s*0.75, s*0.18, s*0.25);
+        });
+    }
+
+    // ============================================
+    // SKINS - EDITOR
+    // ============================================
+    function initSkinEditor() {
+        var canvas = document.getElementById('skin-editor-canvas');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        var SIZE = 64, SCALE = 8;
+        canvas.width = SIZE * SCALE;
+        canvas.height = SIZE * SCALE;
+
+        var pixels = [];
+        for (var i = 0; i < SIZE * SIZE; i++) pixels.push('rgba(0,0,0,0)');
+
+        var currentColor = '#55aaff';
+        var currentTool = 'pencil';
+        var currentLayer = 'base';
+        var isDrawing = false;
+
+        var colorPicker = document.getElementById('color-picker');
+        if (colorPicker) {
+            colorPicker.addEventListener('input', function(e) { currentColor = e.target.value; });
+        }
+
+        var toolBtns = document.querySelectorAll('[data-tool]');
+        toolBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                toolBtns.forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                currentTool = btn.dataset.tool;
+                canvas.style.cursor = currentTool === 'fill' ? 'cell' : currentTool === 'eyedropper' ? 'copy' : 'crosshair';
             });
-
-            partsGrid.appendChild(partItem);
         });
-    }
 
-    function updatePartPreviews() {
-        const section = categoryMap[currentCategory];
-        if (!section) return;
-        const currentColor = skinComposer.currentSkin.colors[section] || '#c68e5b';
-        const partType = currentCategory === 'heads' ? 'head' : currentCategory === 'bodies' ? 'body' : currentCategory === 'arms' ? 'arm' : 'leg';
-        document.querySelectorAll('.part-item .part-preview').forEach(img => {
-            img.src = skinComposer.generatePreview(partType, currentColor);
+        var layerBtns = document.querySelectorAll('.layer-btn');
+        layerBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                layerBtns.forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                currentLayer = btn.dataset.layer;
+            });
         });
-    }
 
-    function updateUIFromState() {
-        document.querySelectorAll('.part-item').forEach(p => p.classList.remove('selected'));
-        const section = categoryMap[currentCategory];
-        if (section) {
-            const currentPart = skinComposer.currentSkin.parts[section];
-            if (currentPart) {
-                document.querySelectorAll('.part-item').forEach(p => {
-                    if (p.dataset.partId === currentPart) p.classList.add('selected');
-                });
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#222';
+            for (var y = 0; y < SIZE; y++) {
+                for (var x = 0; x < SIZE; x++) {
+                    if ((x + y) % 2 === 0) ctx.fillRect(x*SCALE, y*SCALE, SCALE, SCALE);
+                }
+            }
+            for (var i = 0; i < SIZE; i++) {
+                for (var j = 0; j < SIZE; j++) {
+                    var idx = i * SIZE + j;
+                    var color = pixels[idx];
+                    if (color && color !== 'rgba(0,0,0,0)') {
+                        ctx.fillStyle = color;
+                        ctx.fillRect(j * SCALE, i * SCALE, SCALE, SCALE);
+                    }
+                }
+            }
+            ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+            ctx.lineWidth = 0.5;
+            for (var k = 0; k <= SIZE; k++) {
+                ctx.beginPath(); ctx.moveTo(k*SCALE, 0); ctx.lineTo(k*SCALE, canvas.height); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(0, k*SCALE); ctx.lineTo(canvas.width, k*SCALE); ctx.stroke();
             }
         }
-        updateColorSelection();
-        updatePartPreviews();
+
+        function getPixel(r, c) { return pixels[r * SIZE + c]; }
+        function setPixel(r, c, color) { if (r >= 0 && r < SIZE && c >= 0 && c < SIZE) pixels[r * SIZE + c] = color; }
+
+        function floodFill(sr, sc, fillColor) {
+            var target = getPixel(sr, sc);
+            if (target === fillColor) return;
+            var stack = [[sr, sc]], visited = {};
+            while (stack.length) {
+                var cell = stack.pop(), r = cell[0], c = cell[1], key = r + ',' + c;
+                if (visited[key] || r < 0 || r >= SIZE || c < 0 || c >= SIZE || getPixel(r,c) !== target) continue;
+                visited[key] = true;
+                setPixel(r, c, fillColor);
+                stack.push([r-1,c],[r+1,c],[r,c-1],[r,c+1]);
+            }
+        }
+
+        function getCanvasCoords(e) {
+            var rect = canvas.getBoundingClientRect();
+            var x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            var y = (e.clientY - rect.top) * (canvas.height / rect.height);
+            return { row: Math.floor(y / SCALE), col: Math.floor(x / SCALE) };
+        }
+
+        function rgbToHex(rgba) {
+            var m = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+            if (!m) return '#55aaff';
+            function h(x) { return ('0' + parseInt(x).toString(16)).slice(-2); }
+            return '#' + h(m[1]) + h(m[2]) + h(m[3]);
+        }
+
+        function updatePreview() {
+            var preview = document.getElementById('skin-preview-3d');
+            if (!preview) return;
+            var pc = preview.querySelector('canvas');
+            if (!pc) return;
+            var w = preview.clientWidth || 250, h = preview.clientHeight || 250;
+            pc.width = w * 2; pc.height = h * 2;
+            var pctx = pc.getContext('2d');
+            pctx.fillStyle = '#0a0a0a';
+            pctx.fillRect(0, 0, pc.width, pc.height);
+            var bs = Math.min(w*2, h*2) * 0.35, cx = w;
+            function drawQuad(px, py, pw, ph, tx, ty, tw, th) {
+                var colors = [];
+                for (var y = ty; y < ty + th && y < SIZE; y++)
+                    for (var x = tx; x < tx + tw && x < SIZE; x++) {
+                        var c = pixels[y * SIZE + x];
+                        if (c && c !== 'rgba(0,0,0,0)') colors.push(c);
+                    }
+                pctx.fillStyle = colors[Math.floor(colors.length/2)] || '#4a6a8a';
+                pctx.fillRect(Math.round(px), Math.round(py), Math.round(pw), Math.round(ph));
+            }
+            drawQuad(cx - bs*0.5, 10, bs*0.5, bs*0.5, 8, 0, 8, 8);
+            drawQuad(cx - bs*0.3, 10 + bs*0.5, bs*0.3, bs*0.4, 20, 16, 8, 12);
+            drawQuad(cx - bs*0.5 - 10, 10 + bs*0.5, bs*0.15, bs*0.4, 44, 16, 4, 12);
+            drawQuad(cx - bs*0.15, 10 + bs*0.9, bs*0.12, bs*0.3, 4, 16, 4, 4);
+        }
+
+        function onPointerDown(e) {
+            isDrawing = true;
+            var pos = getCanvasCoords(e);
+            if (!pos || pos.row < 0 || pos.row >= SIZE || pos.col < 0 || pos.col >= SIZE) return;
+
+            if (currentTool === 'fill') {
+                var fc = currentLayer === 'overlay' ? currentColor + '80' : currentColor;
+                floodFill(pos.row, pos.col, fc);
+                render(); updatePreview();
+            } else if (currentTool === 'eyedropper') {
+                var p = getPixel(pos.row, pos.col);
+                if (p && p !== 'rgba(0,0,0,0)') { currentColor = p; if (colorPicker) colorPicker.value = rgbToHex(p); }
+            } else if (currentTool === 'pencil' || currentTool === 'eraser') {
+                var color = currentTool === 'eraser' ? 'rgba(0,0,0,0)' : (currentLayer === 'overlay' ? currentColor + '80' : currentColor);
+                setPixel(pos.row, pos.col, color);
+                render(); updatePreview();
+            }
+        }
+
+        function onPointerMove(e) {
+            if (!isDrawing) return;
+            var pos = getCanvasCoords(e);
+            if (!pos || pos.row < 0 || pos.row >= SIZE || pos.col < 0 || pos.col >= SIZE) return;
+            if (currentTool === 'pencil' || currentTool === 'eraser') {
+                var color = currentTool === 'eraser' ? 'rgba(0,0,0,0)' : (currentLayer === 'overlay' ? currentColor + '80' : currentColor);
+                setPixel(pos.row, pos.col, color);
+                render(); updatePreview();
+            }
+        }
+
+        function onPointerUp() { isDrawing = false; }
+
+        canvas.addEventListener('mousedown', onPointerDown);
+        canvas.addEventListener('mousemove', onPointerMove);
+        canvas.addEventListener('mouseup', onPointerUp);
+        canvas.addEventListener('mouseleave', onPointerUp);
+        canvas.addEventListener('touchstart', function(e) { e.preventDefault(); var t = e.touches[0]; onPointerDown({clientX:t.clientX,clientY:t.clientY}); });
+        canvas.addEventListener('touchmove', function(e) { e.preventDefault(); var t = e.touches[0]; onPointerMove({clientX:t.clientX,clientY:t.clientY}); });
+        canvas.addEventListener('touchend', onPointerUp);
+
+        render();
+
+        var exportBtn = document.getElementById('btn-export-skin');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function() {
+                var ec = document.createElement('canvas');
+                ec.width = SIZE; ec.height = SIZE;
+                var ectx = ec.getContext('2d');
+                for (var i = 0; i < SIZE; i++)
+                    for (var j = 0; j < SIZE; j++) {
+                        var col = pixels[i * SIZE + j];
+                        if (col && col !== 'rgba(0,0,0,0)') { ectx.fillStyle = col; ectx.fillRect(j, i, 1, 1); }
+                    }
+                var link = document.createElement('a');
+                link.download = 'skin_custom.png';
+                link.href = ec.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        var clearBtn = document.getElementById('btn-clear-skin');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                for (var i = 0; i < pixels.length; i++) pixels[i] = 'rgba(0,0,0,0)';
+                render(); updatePreview();
+            });
+        }
+
+        updatePreview();
     }
 
-    function downloadBlob(blob, filename) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
+    // ============================================
+    // MOBS
+    // ============================================
+    function initMobs() {
+        var grid = document.getElementById('mob-grid');
+        if (!grid) return;
+        var filter = 'all', search = '';
 
-    function showToast(message) {
-        const existingToast = document.querySelector('.toast');
-        if (existingToast) existingToast.remove();
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.textContent = message;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    }
+        function render() {
+            grid.innerHTML = '';
+            var filtered = MOBS_DATA.filter(function(m) {
+                if (filter !== 'all' && m.cat !== filter) return false;
+                if (search && m.name.toLowerCase().indexOf(search) === -1 && m.desc.toLowerCase().indexOf(search) === -1) return false;
+                return true;
+            });
 
-    function initMobCards() {
-        const grid = document.getElementById('mobGrid');
-        renderMobs(MOB_CARDS);
+            filtered.forEach(function(mob) {
+                var card = document.createElement('div');
+                card.className = 'mc-panel mob-card';
 
-        document.querySelectorAll('.mob-filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.mob-filter-btn').forEach(b => b.classList.remove('active'));
+                var prev = document.createElement('div');
+                prev.className = 'mob-card-preview';
+                var pc = document.createElement('canvas');
+                pc.width = 200; pc.height = 130;
+                prev.appendChild(pc);
+                var pctx = pc.getContext('2d');
+                pctx.fillStyle = '#0a0a0a';
+                pctx.fillRect(0, 0, 200, 130);
+                pctx.font = '48px monospace';
+                pctx.textAlign = 'center';
+                pctx.textBaseline = 'middle';
+                pctx.fillStyle = '#fff';
+                pctx.fillText(mob.emoji, 100, 65);
+
+                var html = '<div class="mob-name">' + mob.name + '</div>';
+                html += '<div class="mob-desc">' + mob.desc + '</div>';
+                html += '<div class="mob-detail"><span class="label">Bioma:</span> ' + mob.biome + '</div>';
+                html += '<div class="mob-detail"><span class="label">Threat Level:</span> <span class="mob-threat ' + mob.tl + '">' + mob.threat + '/10</span></div>';
+
+                if (mob.drops && mob.drops.length > 0) {
+                    html += '<div class="mob-detail" style="margin-top:6px;"><span class="label">Drops:</span></div><div class="loot-table">';
+                    mob.drops.forEach(function(d) {
+                        html += '<div class="loot-slot">' + d.i.charAt(0) + '<span class="chance">' + d.c + '</span></div>';
+                    });
+                    html += '</div>';
+                }
+
+                card.appendChild(prev);
+                card.insertAdjacentHTML('beforeend', html);
+                grid.appendChild(card);
+            });
+        }
+
+        var filterBtns = document.querySelectorAll('.mob-filter-btn');
+        filterBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                filterBtns.forEach(function(b) { b.classList.remove('active'); });
                 btn.classList.add('active');
-                filterMobs();
+                filter = btn.dataset.filter;
+                render();
             });
         });
 
-        document.getElementById('mobSearch').addEventListener('input', () => filterMobs());
-    }
-
-    function filterMobs() {
-        const search = document.getElementById('mobSearch').value.toLowerCase();
-        const category = document.querySelector('.mob-filter-btn.active').dataset.filter;
-        let filtered = MOB_CARDS;
-
-        if (category !== 'all') {
-            filtered = filtered.filter(mob => mob.category === category);
-        }
-
-        if (search) {
-            filtered = filtered.filter(mob =>
-                mob.name.toLowerCase().includes(search) ||
-                mob.description.toLowerCase().includes(search) ||
-                mob.tags.some(t => t.toLowerCase().includes(search))
-            );
-        }
-
-        renderMobs(filtered);
-    }
-
-    function renderMobs(mobs) {
-        const grid = document.getElementById('mobGrid');
-        grid.innerHTML = '';
-
-        if (mobs.length === 0) {
-            grid.innerHTML = `
-                <div class="mob-empty">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    <p>Nenhum mob encontrado</p>
-                </div>
-            `;
-            return;
-        }
-
-        mobs.forEach(mob => {
-            const card = document.createElement('div');
-            card.className = 'mob-card';
-            card.innerHTML = `
-                <div class="mob-card-preview" style="background: linear-gradient(135deg, ${mob.colors.body}, ${mob.colors.head})">
-                    <span class="mob-category-badge ${mob.category}">${mob.category}</span>
-                    <span class="mob-emoji">${mob.emoji}</span>
-                </div>
-                <div class="mob-card-info">
-                    <h3>${mob.name}</h3>
-                    <p>${mob.description}</p>
-                    <div class="mob-card-tags">${mob.tags.map(t => `<span class="mob-tag">${t}</span>`).join('')}</div>
-                </div>
-            `;
-            card.addEventListener('click', () => {
-                const template = {
-                    id: mob.id,
-                    name: mob.name,
-                    description: mob.description,
-                    colors: { ...mob.colors }
-                };
-                skinComposer.loadTemplate(template);
-                updateUIFromState();
-                document.querySelector('.nav-btn[data-section="creator"]').click();
-                showToast(`${mob.emoji} ${mob.name} carregado!`);
+        var searchInput = document.getElementById('mob-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                search = e.target.value.toLowerCase().trim();
+                render();
             });
-            grid.appendChild(card);
-        });
+        }
+        render();
     }
-});
+
+    // ============================================
+    // MODS
+    // ============================================
+    function initMods() {
+        var grid = document.getElementById('mods-grid');
+        if (!grid) return;
+        var f = { ver: 'all', type: 'all', sort: 'popular', search: '' };
+
+        function render() {
+            grid.innerHTML = '';
+            var filtered = MODS_DATA.filter(function(m) {
+                if (f.ver !== 'all' && m.ver.indexOf(f.ver) !== 0) return false;
+                if (f.type !== 'all' && m.type !== f.type) return false;
+                if (f.search && m.title.toLowerCase().indexOf(f.search) === -1 && m.desc.toLowerCase().indexOf(f.search) === -1) return false;
+                return true;
+            });
+
+            var sorted = filtered.slice();
+            if (f.sort === 'recent') sorted.sort(function(a,b) { return parseFloat(b.ver) - parseFloat(a.ver); });
+            else if (f.sort === 'downloads') sorted.sort(function(a,b) { return parseInt(b.dl) - parseInt(a.dl); });
+            else sorted.sort(function(a,b) { return parseInt(b.dl) - parseInt(a.dl); });
+
+            sorted.forEach(function(mod) {
+                var card = document.createElement('div');
+                card.className = 'mc-panel mod-card';
+                var tagsHtml = '';
+                mod.loader.split(',').forEach(function(l) {
+                    tagsHtml += '<span class="mod-tag ' + l.trim().toLowerCase() + '">' + l.trim() + '</span>';
+                });
+                card.innerHTML =
+                    '<div class="mod-card-icon">' + mod.emoji + '</div>' +
+                    '<div class="mod-title">' + mod.title + '</div>' +
+                    '<div class="mod-version">v' + mod.ver + '</div>' +
+                    '<div class="mod-desc">' + mod.desc + '</div>' +
+                    '<div class="mod-tags">' + tagsHtml + '</div>' +
+                    '<button class="mc-btn" style="width:100%;font-size:9px;padding:8px;">DOWNLOAD DIRECT</button>';
+                var btn = card.querySelector('.mc-btn');
+                if (btn) btn.addEventListener('click', function() { alert('Download de ' + mod.title + ' iniciado!'); });
+                grid.appendChild(card);
+            });
+        }
+
+        var verSel = document.getElementById('filter-version');
+        var typeSel = document.getElementById('filter-type');
+        var sortSel = document.getElementById('filter-sort');
+        var searchInput = document.getElementById('mod-search');
+
+        function onChange() {
+            f.ver = verSel ? verSel.value : 'all';
+            f.type = typeSel ? typeSel.value : 'all';
+            f.sort = sortSel ? sortSel.value : 'popular';
+            f.search = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            render();
+        }
+
+        if (verSel) verSel.addEventListener('change', onChange);
+        if (typeSel) typeSel.addEventListener('change', onChange);
+        if (sortSel) sortSel.addEventListener('change', onChange);
+        if (searchInput) searchInput.addEventListener('input', onChange);
+        render();
+    }
+
+    // ============================================
+    // INIT
+    // ============================================
+    function init() {
+        initTabs();
+        initBgCanvas();
+        initSteveViewer();
+        initFeaturedSkins();
+        initSkinEditor();
+        initMobs();
+        initMods();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+
+})();
