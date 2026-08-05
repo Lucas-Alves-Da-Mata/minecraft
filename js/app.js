@@ -5,20 +5,20 @@
     // DATA
     // ============================================
     var MOBS_DATA = [
-        { id:'sheep', name:'Sheep', cat:'passive', desc:'Pacífica e fofinha, fornece lã para camas e decoração.', biome:'Planícies, Encostas', threat:1, tl:'low', emoji:'🐑', drops:[{i:'Lã',c:'100%'},{i:'Carneiro Cru',c:'50%'}] },
-        { id:'cow', name:'Cow', cat:'passive', desc:'Fonte de couro e carne. Essencial para iniciar uma fazenda.', biome:'Planícies, Florestas', threat:1, tl:'low', emoji:'🐄', drops:[{i:'Couro',c:'100%'},{i:'Bife Cru',c:'50%'}] },
-        { id:'pig', name:'Pig', cat:'passive', desc:'Montável com uma cenoura. Fornece costeleta de porco.', biome:'Planícies, Florestas', threat:1, tl:'low', emoji:'🐖', drops:[{i:'Costeleta Crua',c:'100%'}] },
-        { id:'chicken', name:'Chicken', cat:'passive', desc:'Solta penas e ovos. Pode ser usada para farms automáticas.', biome:'Planícies, Savanas', threat:1, tl:'low', emoji:'🐔', drops:[{i:'Pena',c:'100%'},{i:'Frango Cru',c:'50%'}] },
-        { id:'axolotl', name:'Axolotl', cat:'passive', desc:'Anfíbio aquatico que ajuda em batalhas subaquáticas.', biome:'Cavernas Lush', threat:1, tl:'low', emoji:'🦎', drops:[] },
-        { id:'glow_squid', name:'Glow Squid', cat:'passive', desc:'Lula brilhante que solta sacos de tinta brilhante.', biome:'Oceanos', threat:1, tl:'low', emoji:'🦑', drops:[{i:'Saco de Tinta Brilhante',c:'100%'}] },
-        { id:'wolf', name:'Wolf', cat:'neutral', desc:'Domesticável com ossos. Protege o jogador contra hostis.', biome:'Florestas, Taigas', threat:3, tl:'medium', emoji:'🐺', drops:[] },
-        { id:'iron_golem', name:'Iron Golem', cat:'neutral', desc:'Protetor de vilas. Causa dano massivo a mobs hostis.', biome:'Vilas', threat:7, tl:'high', emoji:'🗿', drops:[{i:'Ferro',c:'100%'},{i:'Papoula',c:'50%'}] },
+        { id:'sheep', name:'Ovelha', cat:'passive', desc:'Pacífica e fofinha, fornece lã para camas e decoração.', biome:'Planícies, Encostas', threat:1, tl:'low', emoji:'🐑', drops:[{i:'Lã',c:'100%'},{i:'Carneiro Cru',c:'50%'}] },
+        { id:'cow', name:'Vaca', cat:'passive', desc:'Fonte de couro e carne. Essencial para iniciar uma fazenda.', biome:'Planícies, Florestas', threat:1, tl:'low', emoji:'🐄', drops:[{i:'Couro',c:'100%'},{i:'Bife Cru',c:'50%'}] },
+        { id:'pig', name:'Porco', cat:'passive', desc:'Montável com uma cenoura. Fornece costeleta de porco.', biome:'Planícies, Florestas', threat:1, tl:'low', emoji:'🐖', drops:[{i:'Costeleta Crua',c:'100%'}] },
+        { id:'chicken', name:'Galinha', cat:'passive', desc:'Solta penas e ovos. Pode ser usada para farms automáticas.', biome:'Planícies, Savanas', threat:1, tl:'low', emoji:'🐔', drops:[{i:'Pena',c:'100%'},{i:'Frango Cru',c:'50%'}] },
+        { id:'axolotl', name:'Axolote', cat:'passive', desc:'Anfíbio aquatico que ajuda em batalhas subaquáticas.', biome:'Cavernas Lush', threat:1, tl:'low', emoji:'🦎', drops:[] },
+        { id:'glow_squid', name:'Lula Brilhante', cat:'passive', desc:'Lula brilhante que solta sacos de tinta brilhante.', biome:'Oceanos', threat:1, tl:'low', emoji:'🦑', drops:[{i:'Saco de Tinta Brilhante',c:'100%'}] },
+        { id:'wolf', name:'Lobo', cat:'neutral', desc:'Domesticável com ossos. Protege o jogador contra hostis.', biome:'Florestas, Taigas', threat:3, tl:'medium', emoji:'🐺', drops:[] },
+        { id:'iron_golem', name:'Golem de Ferro', cat:'neutral', desc:'Protetor de vilas. Causa dano massivo a mobs hostis.', biome:'Vilas', threat:7, tl:'high', emoji:'🗿', drops:[{i:'Ferro',c:'100%'},{i:'Papoula',c:'50%'}] },
         { id:'panda', name:'Panda', cat:'neutral', desc:'Preguiçoso mas perigoso se irritado.', biome:'Bambuzais', threat:2, tl:'low', emoji:'🐼', drops:[{i:'Bambu',c:'100%'}] },
         { id:'creeper', name:'Creeper', cat:'hostile', desc:'Explosivo silencioso. Causa dano massivo em área.', biome:'Superfície', threat:8, tl:'high', emoji:'💥', drops:[{i:'Pólvora',c:'100%'},{i:'Disco',c:'8%'}] },
-        { id:'zombie', name:'Zombie', cat:'hostile', desc:'Morto-vivo lento mas persistente. Queima ao sol.', biome:'Superfície, Cavernas', threat:4, tl:'medium', emoji:'🧟', drops:[{i:'Carne Podre',c:'100%'},{i:'Batata',c:'2%'}] },
-        { id:'skeleton', name:'Skeleton', cat:'hostile', desc:'Arqueiro morto-vivo preciso. Ataca a distância.', biome:'Superfície, Cavernas', threat:6, tl:'medium', emoji:'💀', drops:[{i:'Flecha',c:'100%'},{i:'Osso',c:'50%'}] },
+        { id:'zombie', name:'Zumbi', cat:'hostile', desc:'Morto-vivo lento mas persistente. Queima ao sol.', biome:'Superfície, Cavernas', threat:4, tl:'medium', emoji:'🧟', drops:[{i:'Carne Podre',c:'100%'},{i:'Batata',c:'2%'}] },
+        { id:'skeleton', name:'Esqueleto', cat:'hostile', desc:'Arqueiro morto-vivo preciso. Ataca a distância.', biome:'Superfície, Cavernas', threat:6, tl:'medium', emoji:'💀', drops:[{i:'Flecha',c:'100%'},{i:'Osso',c:'50%'}] },
         { id:'strider', name:'Strider', cat:'hostile', desc:'Montável no Nether. Anda sobre lava.', biome:'Nether', threat:3, tl:'medium', emoji:'🕷️', drops:[{i:'Fio',c:'100%'}] },
-        { id:'warden', name:'Warden', cat:'hostile', desc:'Guardião cego das profundezas. Letal!', biome:'Ancient Cities', threat:10, tl:'high', emoji:'👁️', drops:[{i:'Catálise Sculk',c:'100%'}] }
+        { id:'warden', name:'Guardião', cat:'hostile', desc:'Guardião cego das profundezas. Letal!', biome:'Ancient Cities', threat:10, tl:'high', emoji:'👁️', drops:[{i:'Catálise Sculk',c:'100%'}] }
     ];
 
     var MODS_DATA = [
@@ -35,15 +35,17 @@
     ];
 
     var FEATURED_SKINS = [
-        { name:'Cavaleiro de Pedra', stars:4.8, dl:'12.4k', color:'#7a7a7a' },
-        { name:'Hoodie Guy', stars:4.6, dl:'8.7k', color:'#4a7a9a' },
-        { name:'Zumbi', stars:4.3, dl:'6.2k', color:'#3a7a3a' },
-        { name:'Creeper', stars:4.9, dl:'15.1k', color:'#5a7a5a' }
+        { name:'Cavaleiro de Pedra', stars:4.8, dl:'12.4k', mcname:'StoneKnight' },
+        { name:'Hoodie Guy', stars:4.6, dl:'8.7k', mcname:'HoodieGuy' },
+        { name:'Zumbi', stars:4.3, dl:'6.2k', mcname:'Zumbi' },
+        { name:'Creeper', stars:4.9, dl:'15.1k', mcname:'Creeper' }
     ];
 
     // ============================================
     // TAB SWITCHER
     // ============================================
+    var mobsController = null;
+
     function initTabs() {
         var tabs = document.querySelectorAll('.mc-tab');
         tabs.forEach(function(tab) {
@@ -54,6 +56,9 @@
                 document.querySelectorAll('.tab-content').forEach(function(s) { s.classList.remove('active'); });
                 var el = document.getElementById('tab-' + target);
                 if (el) el.classList.add('active');
+                if (!mobsController) return;
+                if (target === 'mobs') mobsController.refresh();
+                else mobsController.dispose();
             });
         });
     }
@@ -122,12 +127,12 @@
     // HOME - STEVE VIEWER (VESTIÁRIO)
     // ============================================
     var CHAR_VARIANTS = [
-        { name:'Steve', skin:'#4a6a8a', skinDark:'#3a4a6a', head:'#c68e5b', mouth:'#8b5e3c' },
-        { name:'Alex', skin:'#6a8a5a', skinDark:'#4a6a3a', head:'#f0a67a', mouth:'#c08850' },
-        { name:'Herobrine', skin:'#4a5a7a', skinDark:'#3a4a5a', head:'#e0d8c8', mouth:'#a09888' },
-        { name:'Ninja', skin:'#3a3a4a', skinDark:'#2a2a3a', head:'#5a5a5a', mouth:'#3a3a3a' },
-        { name:'Zumbi', skin:'#3a6a4a', skinDark:'#2a4a3a', head:'#6a8a5a', mouth:'#2a3a2a' },
-        { name:'Creeper', skin:'#4a7a4a', skinDark:'#3a5a3a', head:'#5a8a5a', mouth:'#3a5a3a' }
+        { name:'Steve', mcname:'Steve' },
+        { name:'Alex', mcname:'Alex' },
+        { name:'Herobrine', mcname:'Herobrine' },
+        { name:'Ninja', mcname:'Ninja' },
+        { name:'Zumbi', mcname:'Zumbi' },
+        { name:'Creeper', mcname:'Creeper' }
     ];
 
     function initSteveViewer() {
@@ -136,56 +141,70 @@
         var canvas = container.querySelector('canvas');
         if (!canvas) return;
         var currentVariant = 0;
+        var viewer = null;
+        var using3D = false;
 
-        function drawVariant(ctx, w, h, v) {
-            var s = Math.min(w, h) / 70;
-            var ox = (w - 32 * s) / 2;
-            var oy = (h - 64 * s) / 2;
-
-            ctx.clearRect(0, 0, w, h);
-            // Body
-            ctx.fillStyle = v.skin;
-            ctx.fillRect(ox + 8*s, oy + 24*s, 16*s, 24*s);
-            // Head
-            ctx.fillStyle = v.head;
-            ctx.fillRect(ox + 8*s, oy + 4*s, 16*s, 20*s);
-            // Eyes
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(ox + 10*s, oy + 10*s, 4*s, 4*s);
-            ctx.fillRect(ox + 18*s, oy + 10*s, 4*s, 4*s);
-            ctx.fillStyle = '#222';
-            ctx.fillRect(ox + 11*s, oy + 11*s, 2*s, 2*s);
-            ctx.fillRect(ox + 19*s, oy + 11*s, 2*s, 2*s);
-            // Mouth
-            ctx.fillStyle = v.mouth;
-            ctx.fillRect(ox + 12*s, oy + 18*s, 8*s, 2*s);
-            // Arms
-            ctx.fillStyle = v.skin;
-            ctx.fillRect(ox + 2*s, oy + 24*s, 6*s, 20*s);
-            ctx.fillRect(ox + 24*s, oy + 24*s, 6*s, 20*s);
-            // Legs
-            ctx.fillStyle = v.skinDark;
-            ctx.fillRect(ox + 10*s, oy + 48*s, 6*s, 12*s);
-            ctx.fillRect(ox + 16*s, oy + 48*s, 6*s, 12*s);
+        function skinUrl() {
+            return 'https://mc-heads.net/skin/' + encodeURIComponent(CHAR_VARIANTS[currentVariant].mcname);
         }
 
-        function redraw() {
+        function bodyUrl() {
+            return 'https://mc-heads.net/body/' + encodeURIComponent(CHAR_VARIANTS[currentVariant].mcname) + '/256';
+        }
+
+        function drawFallback() {
+            canvas.style.backgroundImage = 'url(' + bodyUrl() + ')';
+            canvas.style.backgroundSize = 'contain';
+            canvas.style.backgroundRepeat = 'no-repeat';
+            canvas.style.backgroundPosition = 'center';
+            canvas.style.backgroundColor = 'rgba(0,0,0,0.4)';
+        }
+
+        function resize() {
             var rect = container.getBoundingClientRect();
-            canvas.width = rect.width * 2;
-            canvas.height = rect.height * 2;
+            if (using3D && viewer) {
+                viewer.setSize(rect.width, rect.height);
+            } else {
+                canvas.width = rect.width * 2;
+                canvas.height = rect.height * 2;
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+                drawFallback();
+            }
+        }
+
+        function init3D() {
+            if (typeof skinview3d === 'undefined') return;
+            using3D = true;
+            var rect = container.getBoundingClientRect();
             canvas.style.width = rect.width + 'px';
             canvas.style.height = rect.height + 'px';
-            drawVariant(canvas.getContext('2d'), canvas.width, canvas.height, CHAR_VARIANTS[currentVariant]);
+            canvas.style.backgroundImage = 'none';
+            viewer = new skinview3d.SkinViewer({
+                canvas: canvas,
+                width: rect.width,
+                height: rect.height,
+                skin: skinUrl(),
+                animation: new skinview3d.WalkingAnimation(),
+                autoRotate: true,
+                autoRotateSpeed: 0.4
+            });
+            if (viewer.controls) viewer.controls.enableZoom = false;
         }
 
-        redraw();
-        window.addEventListener('resize', redraw);
+        init3D();
+        resize();
+        window.addEventListener('resize', resize);
 
         var vestBtn = document.querySelector('.btn-vestiario');
         if (vestBtn) {
             vestBtn.addEventListener('click', function() {
                 currentVariant = (currentVariant + 1) % CHAR_VARIANTS.length;
-                redraw();
+                if (using3D && viewer) {
+                    viewer.loadSkin(skinUrl());
+                } else {
+                    drawFallback();
+                }
                 showToast('Vestiário: ' + CHAR_VARIANTS[currentVariant].name);
             });
         }
@@ -199,32 +218,19 @@
         if (!previews.length) return;
 
         previews.forEach(function(div, idx) {
-            var skin = FEATURED_SKINS[idx] || { name:'Skin', stars:0, dl:'0', color:'#555' };
+            var skin = FEATURED_SKINS[idx] || { name:'Skin', mcname:'Steve' };
             var c = document.createElement('canvas');
-            c.width = 160; c.height = 160;
-            c.style.width = '100%'; c.style.height = '100%';
+            c.width = 200; c.height = 200;
+            c.style.width = '100%';
+            c.style.height = '100%';
+            c.style.imageRendering = 'pixelated';
             div.appendChild(c);
-            var ctx = c.getContext('2d');
-            var s = 160;
-
-            ctx.fillStyle = skin.color;
-            ctx.fillRect(0, 0, s, s);
-
-            ctx.fillStyle = '#c68e5b';
-            ctx.fillRect(s*0.25, s*0.1, s*0.5, s*0.3);
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(s*0.3, s*0.2, s*0.12, s*0.08);
-            ctx.fillRect(s*0.58, s*0.2, s*0.12, s*0.08);
-            ctx.fillStyle = '#222';
-            ctx.fillRect(s*0.33, s*0.22, s*0.06, s*0.05);
-            ctx.fillRect(s*0.6, s*0.22, s*0.06, s*0.05);
-            ctx.fillStyle = '#4a6a8a';
-            ctx.fillRect(s*0.25, s*0.4, s*0.5, s*0.35);
-            ctx.fillRect(s*0.06, s*0.4, s*0.18, s*0.35);
-            ctx.fillRect(s*0.76, s*0.4, s*0.18, s*0.35);
-            ctx.fillStyle = '#3a4a6a';
-            ctx.fillRect(s*0.3, s*0.75, s*0.18, s*0.25);
-            ctx.fillRect(s*0.52, s*0.75, s*0.18, s*0.25);
+            var url = 'https://mc-heads.net/body/' + encodeURIComponent(skin.mcname) + '/256';
+            c.style.backgroundImage = 'url(' + url + ')';
+            c.style.backgroundSize = 'contain';
+            c.style.backgroundRepeat = 'no-repeat';
+            c.style.backgroundPosition = 'center';
+            c.style.backgroundColor = 'rgba(0,0,0,0.4)';
         });
     }
 
@@ -434,8 +440,24 @@
         var grid = document.getElementById('mob-grid');
         if (!grid) return;
         var filter = 'all', search = '';
+        var viewers = [];
+
+        function use3D() {
+            return typeof window.Mob3D !== 'undefined' && window.Mob3D.available();
+        }
+
+        function mobTabVisible() {
+            var el = document.getElementById('tab-mobs');
+            return !!el && el.classList.contains('active');
+        }
+
+        function disposeViewers() {
+            viewers.forEach(function(v) { try { v.dispose(); } catch (e) {} });
+            viewers = [];
+        }
 
         function render() {
+            disposeViewers();
             grid.innerHTML = '';
             var filtered = MOBS_DATA.filter(function(m) {
                 if (filter !== 'all' && m.cat !== filter) return false;
@@ -449,17 +471,31 @@
 
                 var prev = document.createElement('div');
                 prev.className = 'mob-card-preview';
-                var pc = document.createElement('canvas');
-                pc.width = 200; pc.height = 130;
-                prev.appendChild(pc);
-                var pctx = pc.getContext('2d');
-                pctx.fillStyle = '#0a0a0a';
-                pctx.fillRect(0, 0, 200, 130);
-                pctx.font = '48px monospace';
-                pctx.textAlign = 'center';
-                pctx.textBaseline = 'middle';
-                pctx.fillStyle = '#fff';
-                pctx.fillText(mob.emoji, 100, 65);
+                prev.innerHTML = '<span class="rotate-hint">ARRASTE PARA GIRAR 360°</span>';
+
+                var fc = document.createElement('canvas');
+                fc.className = 'mob-preview-fallback';
+                fc.width = 200; fc.height = 130;
+                prev.appendChild(fc);
+                var fctx = fc.getContext('2d');
+                fctx.fillStyle = '#000';
+                fctx.fillRect(0, 0, 200, 130);
+                fctx.font = '48px monospace';
+                fctx.textAlign = 'center';
+                fctx.textBaseline = 'middle';
+                fctx.fillStyle = '#fff';
+                fctx.fillText(mob.emoji, 100, 65);
+
+                if (use3D() && mobTabVisible()) {
+                    var vc = document.createElement('canvas');
+                    vc.className = 'mob-preview-3d';
+                    prev.appendChild(vc);
+                    var viewer = window.Mob3D.createViewer(vc, mob.id, function() {
+                        if (viewer) viewer.dispose();
+                        if (vc.parentNode) vc.parentNode.removeChild(vc);
+                    });
+                    viewers.push(viewer);
+                }
 
                 var html = '<div class="mob-name">' + mob.name + '</div>';
                 html += '<div class="mob-desc">' + mob.desc + '</div>';
@@ -497,6 +533,7 @@
                 render();
             });
         }
+        mobsController = { refresh: render, dispose: disposeViewers };
         render();
     }
 
@@ -765,27 +802,19 @@
             btn.addEventListener('click', function() {
                 var skin = FEATURED_SKINS[idx];
                 if (!skin) return;
-                var c = document.createElement('canvas');
-                c.width = 64; c.height = 64;
-                var ctx = c.getContext('2d');
-                ctx.fillStyle = skin.color;
-                ctx.fillRect(0, 0, 64, 64);
-                ctx.fillStyle = '#c68e5b';
-                ctx.fillRect(8, 8, 8, 8);
-                ctx.fillStyle = '#fff';
-                ctx.fillRect(10, 10, 2, 2); ctx.fillRect(14, 10, 2, 2);
-                ctx.fillStyle = '#222';
-                ctx.fillRect(11, 10, 1, 1); ctx.fillRect(15, 10, 1, 1);
-                ctx.fillStyle = skin.color;
-                ctx.fillRect(20, 20, 8, 12);
-                ctx.fillStyle = '#3a4a6a';
-                ctx.fillRect(32, 20, 4, 12); ctx.fillRect(40, 20, 4, 12);
-                ctx.fillRect(36, 32, 4, 12); ctx.fillRect(44, 32, 4, 12);
-                var link = document.createElement('a');
-                link.download = skin.name.toLowerCase().replace(/\s+/g, '_') + '.png';
-                link.href = c.toDataURL('image/png');
-                link.click();
-                showToast('Skin "' + skin.name + '" baixada!', 'success');
+                var fname = skin.name.toLowerCase().replace(/\s+/g, '_') + '.png';
+                fetch('https://mc-heads.net/skin/' + encodeURIComponent(skin.mcname))
+                    .then(function(r) { return r.blob(); })
+                    .then(function(blob) {
+                        var url = URL.createObjectURL(blob);
+                        var link = document.createElement('a');
+                        link.download = fname;
+                        link.href = url;
+                        link.click();
+                        setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+                        showToast('Skin "' + skin.name + '" baixada!', 'success');
+                    })
+                    .catch(function() { showToast('Falha ao baixar "' + skin.name + '"', 'error'); });
             });
         });
     }

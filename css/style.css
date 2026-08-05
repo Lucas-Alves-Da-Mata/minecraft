@@ -322,7 +322,7 @@ body {
 /* Right */
 #player-3d {
   width: 100%;
-  height: 150px;
+  height: 200px;
   background: rgba(0,0,0,0.4);
   border: 2px solid var(--mc-btn-dark);
   margin-bottom: 0.75rem;
@@ -330,8 +330,30 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
-#player-3d canvas { width: 100%; height: 100%; }
+#player-3d canvas {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  cursor: grab;
+  touch-action: none;
+}
+#player-3d canvas:active { cursor: grabbing; }
+
+.rotate-hint {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 6px;
+  color: var(--mc-yellow);
+  text-shadow: 1px 1px 0 #000;
+  pointer-events: none;
+  animation: pulse 1.2s infinite alternate;
+  z-index: 2;
+}
 
 .btn-vestiario { width: 100%; height: 36px; font-size: 12px; }
 
@@ -457,15 +479,25 @@ body {
 .mob-card-preview {
   width: 100%;
   height: 130px;
-  background: rgba(0,0,0,0.4);
+  background: #000;
   border: 2px solid var(--mc-btn-dark);
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
 }
 .mob-card-preview canvas { width: 100%; height: 100%; }
+.mob-card-preview .rotate-hint { bottom: 2px; }
+.mob-preview-fallback { display: block; }
+.mob-preview-3d {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  touch-action: none;
+}
+.mob-preview-3d:active { cursor: grabbing; }
 
 .mob-name { font-size: 10px; color: var(--mc-yellow); margin-bottom: 4px; text-transform: uppercase; text-shadow: 1px 1px 0 #000; }
 .mob-desc { font-size: 8px; color: var(--mc-text-dim); margin-bottom: 6px; line-height: 1.5; }
