@@ -119,25 +119,35 @@
     }
 
     // ============================================
-    // HOME - STEVE VIEWER
+    // HOME - STEVE VIEWER (VESTIÁRIO)
     // ============================================
+    var CHAR_VARIANTS = [
+        { name:'Steve', skin:'#4a6a8a', skinDark:'#3a4a6a', head:'#c68e5b', mouth:'#8b5e3c' },
+        { name:'Alex', skin:'#6a8a5a', skinDark:'#4a6a3a', head:'#f0a67a', mouth:'#c08850' },
+        { name:'Herobrine', skin:'#4a5a7a', skinDark:'#3a4a5a', head:'#e0d8c8', mouth:'#a09888' },
+        { name:'Ninja', skin:'#3a3a4a', skinDark:'#2a2a3a', head:'#5a5a5a', mouth:'#3a3a3a' },
+        { name:'Zumbi', skin:'#3a6a4a', skinDark:'#2a4a3a', head:'#6a8a5a', mouth:'#2a3a2a' },
+        { name:'Creeper', skin:'#4a7a4a', skinDark:'#3a5a3a', head:'#5a8a5a', mouth:'#3a5a3a' }
+    ];
+
     function initSteveViewer() {
         var container = document.getElementById('player-3d');
         if (!container) return;
         var canvas = container.querySelector('canvas');
         if (!canvas) return;
+        var currentVariant = 0;
 
-        function drawSteve(ctx, w, h) {
+        function drawVariant(ctx, w, h, v) {
             var s = Math.min(w, h) / 70;
             var ox = (w - 32 * s) / 2;
             var oy = (h - 64 * s) / 2;
 
             ctx.clearRect(0, 0, w, h);
             // Body
-            ctx.fillStyle = '#4a6a8a';
+            ctx.fillStyle = v.skin;
             ctx.fillRect(ox + 8*s, oy + 24*s, 16*s, 24*s);
             // Head
-            ctx.fillStyle = '#c68e5b';
+            ctx.fillStyle = v.head;
             ctx.fillRect(ox + 8*s, oy + 4*s, 16*s, 20*s);
             // Eyes
             ctx.fillStyle = '#fff';
@@ -146,28 +156,39 @@
             ctx.fillStyle = '#222';
             ctx.fillRect(ox + 11*s, oy + 11*s, 2*s, 2*s);
             ctx.fillRect(ox + 19*s, oy + 11*s, 2*s, 2*s);
-            ctx.fillStyle = '#8b5e3c';
+            // Mouth
+            ctx.fillStyle = v.mouth;
             ctx.fillRect(ox + 12*s, oy + 18*s, 8*s, 2*s);
             // Arms
-            ctx.fillStyle = '#4a6a8a';
+            ctx.fillStyle = v.skin;
             ctx.fillRect(ox + 2*s, oy + 24*s, 6*s, 20*s);
             ctx.fillRect(ox + 24*s, oy + 24*s, 6*s, 20*s);
             // Legs
-            ctx.fillStyle = '#3a4a6a';
+            ctx.fillStyle = v.skinDark;
             ctx.fillRect(ox + 10*s, oy + 48*s, 6*s, 12*s);
             ctx.fillRect(ox + 16*s, oy + 48*s, 6*s, 12*s);
         }
 
-        function resize() {
+        function redraw() {
             var rect = container.getBoundingClientRect();
             canvas.width = rect.width * 2;
             canvas.height = rect.height * 2;
             canvas.style.width = rect.width + 'px';
             canvas.style.height = rect.height + 'px';
-            drawSteve(canvas.getContext('2d'), canvas.width, canvas.height);
+            drawVariant(canvas.getContext('2d'), canvas.width, canvas.height, CHAR_VARIANTS[currentVariant]);
         }
-        resize();
-        window.addEventListener('resize', resize);
+
+        redraw();
+        window.addEventListener('resize', redraw);
+
+        var vestBtn = document.querySelector('.btn-vestiario');
+        if (vestBtn) {
+            vestBtn.addEventListener('click', function() {
+                currentVariant = (currentVariant + 1) % CHAR_VARIANTS.length;
+                redraw();
+                showToast('Vestiário: ' + CHAR_VARIANTS[currentVariant].name);
+            });
+        }
     }
 
     // ============================================
@@ -516,7 +537,7 @@
                     '<div class="mod-tags">' + tagsHtml + '</div>' +
                     '<button class="mc-btn" style="width:100%;font-size:9px;padding:8px;">DOWNLOAD DIRECT</button>';
                 var btn = card.querySelector('.mc-btn');
-                if (btn) btn.addEventListener('click', function() { alert('Download de ' + mod.title + ' iniciado!'); });
+                if (btn) btn.addEventListener('click', function() { showToast('Download de ' + mod.title + ' iniciado!', 'success'); });
                 grid.appendChild(card);
             });
         }
@@ -542,16 +563,291 @@
     }
 
     // ============================================
+    // MODAL + TOAST SYSTEM
+    // ============================================
+    var modalOverlay = null;
+
+    function openModal(title, bodyHtml) {
+        closeModal();
+        modalOverlay = document.createElement('div');
+        modalOverlay.className = 'mc-modal-overlay';
+        modalOverlay.innerHTML =
+            '<div class="mc-modal">' +
+            '<div class="mc-modal-header"><span class="mc-modal-title">' + title + '</span>' +
+            '<button class="mc-modal-close">✕</button></div>' +
+            '<div class="mc-modal-body">' + bodyHtml + '</div>' +
+            '</div>';
+        document.body.appendChild(modalOverlay);
+        modalOverlay.querySelector('.mc-modal-close').addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) closeModal(); });
+    }
+
+    function closeModal() {
+        if (modalOverlay) { modalOverlay.remove(); modalOverlay = null; }
+    }
+
+    function showToast(msg, type) {
+        var container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
+        var t = document.createElement('div');
+        t.className = 'toast' + (type ? ' ' + type : '');
+        t.textContent = msg;
+        container.appendChild(t);
+        setTimeout(function() {
+            t.style.transition = 'opacity 0.3s';
+            t.style.opacity = '0';
+            setTimeout(function() { t.remove(); }, 320);
+        }, 2600);
+    }
+
+    // ============================================
+    // OPTIONS (OPÇÕES)
+    // ============================================
+    var OPTIONS = { sound: true, particles: true, cloud: false, fov: 70 };
+
+    function loadOptions() {
+        try { var saved = localStorage.getItem('mchub_options'); if (saved) OPTIONS = JSON.parse(saved); } catch (e) {}
+    }
+
+    function saveOptions() {
+        try { localStorage.setItem('mchub_options', JSON.stringify(OPTIONS)); } catch (e) {}
+    }
+
+    function initOptionsButton() {
+        var btn = document.querySelector('.btn-opcoes');
+        if (!btn) return;
+        btn.addEventListener('click', function() {
+            var html =
+                '<div class="toggle-row"><span>🎵 SOM</span><button class="mc-toggle' + (OPTIONS.sound ? ' on' : '') + '" data-opt="sound"></button></div>' +
+                '<div class="toggle-row"><span>✨ PARTÍCULAS</span><button class="mc-toggle' + (OPTIONS.particles ? ' on' : '') + '" data-opt="particles"></button></div>' +
+                '<div class="toggle-row"><span>☁️ NUVENS</span><button class="mc-toggle' + (OPTIONS.cloud ? ' on' : '') + '" data-opt="cloud"></button></div>' +
+                '<div class="option-row"><label>FOV: <span id="fov-value">' + OPTIONS.fov + '</span></label>' +
+                '<input type="range" class="mc-slider" id="fov-slider" min="30" max="110" value="' + OPTIONS.fov + '"></div>';
+            openModal('OPÇÕES', html);
+            modalOverlay.querySelectorAll('.mc-toggle').forEach(function(t) {
+                t.addEventListener('click', function() {
+                    var key = t.dataset.opt;
+                    OPTIONS[key] = !OPTIONS[key];
+                    t.classList.toggle('on', OPTIONS[key]);
+                    saveOptions();
+                });
+            });
+            var slider = modalOverlay.querySelector('#fov-slider');
+            if (slider) slider.addEventListener('input', function() {
+                OPTIONS.fov = parseInt(slider.value, 10);
+                var v = modalOverlay.querySelector('#fov-value');
+                if (v) v.textContent = OPTIONS.fov;
+                saveOptions();
+            });
+        });
+    }
+
+    // ============================================
+    // JOGAR - SERVER CONNECTION
+    // ============================================
+    function initPlayButton() {
+        var btn = document.querySelector('.btn-jogar');
+        if (!btn) return;
+        btn.addEventListener('click', function() {
+            var html =
+                '<div class="server-log" id="server-log"></div>' +
+                '<div class="server-info"><span>Servidor: hub.minecraft-brasil.net</span><span id="ping-info">Ping: --</span></div>' +
+                '<div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>';
+            openModal('CONECTANDO AO SERVIDOR', html);
+            var lines = [
+                ['Resolvendo DNS...', 'ok'],
+                ['Conectando a hub.minecraft-brasil.net:25565...', 'wait'],
+                ['Handshake realizado', 'ok'],
+                ['Autenticando usuário...', 'ok'],
+                ['Carregando mundo...', 'wait'],
+                ['Entrando no lobby #1', 'ok']
+            ];
+            var logEl = document.getElementById('server-log');
+            var fill = document.getElementById('progress-fill');
+            var ping = document.getElementById('ping-info');
+            var i = 0;
+            function step() {
+                if (!logEl || !modalOverlay) return;
+                if (i >= lines.length) {
+                    closeModal();
+                    showToast('Conectado ao lobby #1!', 'success');
+                    return;
+                }
+                var div = document.createElement('div');
+                div.innerHTML = '<span class="log-' + lines[i][1] + '">» ' + lines[i][0] + '</span>';
+                logEl.appendChild(div);
+                logEl.scrollTop = logEl.scrollHeight;
+                fill.style.width = Math.round(((i + 1) / lines.length) * 100) + '%';
+                if (ping) ping.textContent = 'Ping: ' + (15 + Math.round(Math.random() * 40)) + 'ms';
+                i++;
+                setTimeout(step, 500 + Math.random() * 400);
+            }
+            setTimeout(step, 400);
+        });
+    }
+
+    // ============================================
+    // MARKETPLACE
+    // ============================================
+    var MARKET_ITEMS = [
+        { name:'Capa Herói', icon:'🧥', price:'320 Minecoins' },
+        { name:'Skin Neon', icon:'⚡', price:'540 Minecoins' },
+        { name:'Espada Diamante', icon:'🗡️', price:'240 Minecoins' },
+        { name:'Mochila Creeper', icon:'🎒', price:'410 Minecoins' },
+        { name:'Casa Medieval', icon:'🏰', price:'1200 Minecoins' },
+        { name:'Pet Dragão', icon:'🐉', price:'780 Minecoins' }
+    ];
+
+    function initMarketButton() {
+        var btn = document.querySelector('.btn-market');
+        if (!btn) return;
+        btn.addEventListener('click', function() {
+            var html = '<div class="market-grid">';
+            MARKET_ITEMS.forEach(function(item, idx) {
+                html += '<div class="market-item" data-idx="' + idx + '">' +
+                    '<div class="market-item-icon">' + item.icon + '</div>' +
+                    '<div class="market-item-name">' + item.name + '</div>' +
+                    '<div class="market-item-price">' + item.price + '</div></div>';
+            });
+            html += '</div>';
+            openModal('MARKETPLACE', html);
+            modalOverlay.querySelectorAll('.market-item').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    var item = MARKET_ITEMS[parseInt(el.dataset.idx, 10)];
+                    closeModal();
+                    showToast(item.name + ' comprado!', 'success');
+                });
+            });
+        });
+    }
+
+    // ============================================
+    // GALERIA
+    // ============================================
+    function initGallery() {
+        var items = document.querySelectorAll('.gallery-item');
+        items.forEach(function(item, idx) {
+            var c = document.createElement('canvas');
+            c.width = 64; c.height = 64;
+            item.innerHTML = '';
+            item.appendChild(c);
+            var ctx = c.getContext('2d');
+            var colors = ['#c68e5b', '#4a6a8a', '#3a7a3a', '#5a5a7a'];
+            var col = colors[idx % colors.length];
+            ctx.fillStyle = '#1a0a2e';
+            ctx.fillRect(0, 0, 64, 64);
+            ctx.fillStyle = col;
+            ctx.fillRect(24, 18, 16, 20);
+            ctx.fillStyle = '#c68e5b';
+            ctx.fillRect(24, 6, 16, 14);
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(27, 10, 3, 3); ctx.fillRect(34, 10, 3, 3);
+            ctx.fillStyle = '#222';
+            ctx.fillRect(28, 11, 1, 1); ctx.fillRect(35, 11, 1, 1);
+            ctx.fillStyle = '#3a4a6a';
+            ctx.fillRect(28, 38, 6, 10); ctx.fillRect(34, 38, 6, 10);
+        });
+    }
+
+    // ============================================
+    // SKINS - DOWNLOAD
+    // ============================================
+    function initSkinDownloads() {
+        var cards = document.querySelectorAll('.skin-card');
+        cards.forEach(function(card, idx) {
+            var btn = card.querySelector('.mc-btn');
+            if (!btn) return;
+            btn.addEventListener('click', function() {
+                var skin = FEATURED_SKINS[idx];
+                if (!skin) return;
+                var c = document.createElement('canvas');
+                c.width = 64; c.height = 64;
+                var ctx = c.getContext('2d');
+                ctx.fillStyle = skin.color;
+                ctx.fillRect(0, 0, 64, 64);
+                ctx.fillStyle = '#c68e5b';
+                ctx.fillRect(8, 8, 8, 8);
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(10, 10, 2, 2); ctx.fillRect(14, 10, 2, 2);
+                ctx.fillStyle = '#222';
+                ctx.fillRect(11, 10, 1, 1); ctx.fillRect(15, 10, 1, 1);
+                ctx.fillStyle = skin.color;
+                ctx.fillRect(20, 20, 8, 12);
+                ctx.fillStyle = '#3a4a6a';
+                ctx.fillRect(32, 20, 4, 12); ctx.fillRect(40, 20, 4, 12);
+                ctx.fillRect(36, 32, 4, 12); ctx.fillRect(44, 32, 4, 12);
+                var link = document.createElement('a');
+                link.download = skin.name.toLowerCase().replace(/\s+/g, '_') + '.png';
+                link.href = c.toDataURL('image/png');
+                link.click();
+                showToast('Skin "' + skin.name + '" baixada!', 'success');
+            });
+        });
+    }
+
+    // ============================================
+    // FOOTER ACTIONS
+    // ============================================
+    function initFooterActions() {
+        var footer = document.querySelector('.footer-left');
+        if (!footer) return;
+        var enterBtn = footer.querySelector('.mc-btn');
+        if (enterBtn) {
+            enterBtn.addEventListener('click', function() {
+                var html =
+                    '<div class="option-row"><label>USUÁRIO</label><input type="text" class="mc-input" id="login-user" placeholder="Nome de usuário..."></div>' +
+                    '<div class="option-row"><label>SENHA</label><input type="password" class="mc-input" id="login-pass" placeholder="Senha..."></div>' +
+                    '<button class="mc-btn primary" id="login-submit" style="width:100%;font-size:10px;margin-top:4px;">ENTRAR</button>';
+                openModal('FAZER LOGIN', html);
+                var submit = modalOverlay.querySelector('#login-submit');
+                submit.addEventListener('click', function() {
+                    var user = modalOverlay.querySelector('#login-user').value.trim();
+                    if (!user) { showToast('Digite um nome de usuário', 'error'); return; }
+                    closeModal();
+                    showToast('Bem-vindo(a), ' + user + '!', 'success');
+                });
+            });
+        }
+        var debugBtn = footer.querySelector('button:nth-child(2)');
+        if (debugBtn) {
+            debugBtn.addEventListener('click', function() {
+                var html =
+                    '<div class="option-row" style="margin-top:0;font-size:8px;color:var(--mc-text-dim);line-height:2;">' +
+                    'RESOLUÇÃO: ' + window.innerWidth + 'x' + window.innerHeight +
+                    '<br>PLATAFORMA: ' + navigator.platform +
+                    '<br>IDIOMA: ' + (navigator.language || 'pt-BR') +
+                    '<br>ONLINE: ' + navigator.onLine +
+                    '<br>UA: ' + navigator.userAgent.substring(0, 60) + '...' +
+                    '</div>';
+                openModal('DIAGNÓSTICO', html);
+            });
+        }
+    }
+
+    // ============================================
     // INIT
     // ============================================
     function init() {
+        loadOptions();
         initTabs();
         initBgCanvas();
         initSteveViewer();
         initFeaturedSkins();
+        initGallery();
+        initSkinDownloads();
         initSkinEditor();
         initMobs();
         initMods();
+        initPlayButton();
+        initOptionsButton();
+        initMarketButton();
+        initFooterActions();
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
     }
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
