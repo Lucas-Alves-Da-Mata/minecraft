@@ -1167,7 +1167,7 @@ window.MOB3D_MODELS['sheep'] = {
       }
     ]
   },
-  "geometry.sheep.v1.8:geometry.sheep.sheared.v1.8": {
+  "geometry.sheep.v1.8": {
     "visible_bounds_width": 2,
     "visible_bounds_height": 1.75,
     "visible_bounds_offset": [ 0, 0.5, 0 ],

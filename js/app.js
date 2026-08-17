@@ -17,7 +17,7 @@
         { id:'creeper', name:'Creeper', cat:'hostile', desc:'Explosivo silencioso. Causa dano massivo em área.', biome:'Superfície', threat:8, tl:'high', emoji:'💥', drops:[{i:'Pólvora',c:'100%'},{i:'Disco',c:'8%'}] },
         { id:'zombie', name:'Zumbi', cat:'hostile', desc:'Morto-vivo lento mas persistente. Queima ao sol.', biome:'Superfície, Cavernas', threat:4, tl:'medium', emoji:'🧟', drops:[{i:'Carne Podre',c:'100%'},{i:'Batata',c:'2%'}] },
         { id:'skeleton', name:'Esqueleto', cat:'hostile', desc:'Arqueiro morto-vivo preciso. Ataca a distância.', biome:'Superfície, Cavernas', threat:6, tl:'medium', emoji:'💀', drops:[{i:'Flecha',c:'100%'},{i:'Osso',c:'50%'}] },
-        { id:'strider', name:'Strider', cat:'hostile', desc:'Montável no Nether. Anda sobre lava.', biome:'Nether', threat:3, tl:'medium', emoji:'🕷️', drops:[{i:'Fio',c:'100%'}] },
+        { id:'strider', name:'Strider', cat:'passive', desc:'Montável no Nether. Anda sobre lava.', biome:'Nether', threat:3, tl:'low', emoji:'🦎', drops:[] },
         { id:'warden', name:'Guardião', cat:'hostile', desc:'Guardião cego das profundezas. Letal!', biome:'Ancient Cities', threat:10, tl:'high', emoji:'👁️', drops:[{i:'Catálise Sculk',c:'100%'}] }
     ];
 
@@ -70,6 +70,11 @@
                 else mobsController.dispose();
             });
         });
+        var hash = window.location.hash.replace('#', '');
+        if (hash) {
+            var targetTab = document.querySelector('.mc-tab[data-tab="' + hash + '"]');
+            if (targetTab) targetTab.click();
+        }
     }
 
     // ============================================
@@ -480,7 +485,7 @@
 
                 var prev = document.createElement('div');
                 prev.className = 'mob-card-preview';
-                prev.innerHTML = '<span class="rotate-hint">ARRASTE PARA GIRAR 360°</span>';
+                prev.innerHTML = '';
 
                  var fc = document.createElement('canvas');
                  fc.className = 'mob-preview-fallback';
