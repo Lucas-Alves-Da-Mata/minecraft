@@ -535,7 +535,12 @@
                  html += '</div>';
                  html += '<div class="mob-desc">' + mob.desc + '</div>';
                  html += '<div class="mob-detail"><span class="label">Bioma:</span> ' + mob.biome + '</div>';
-                 html += '<div class="mob-detail"><span class="label">Threat:</span> <span class="mob-threat ' + mob.tl + '">' + mob.threat + '/10</span></div>';
+                 html += '<div class="mob-detail"><span class="label">Ameaça:</span> <span class="mob-threat ' + mob.tl + '">' + mob.threat + '/10</span></div>';
+
+                 var t = Math.max(0, Math.min(10, Number(mob.threat) || 0));
+                 var cells = '';
+                 for (var ti = 0; ti < 10; ti++) cells += ti < t ? '■' : '□';
+                 html += '<div class="mob-detail"><span class="label">Perigo:</span> <span class="mob-threat ' + mob.tl + '">' + cells + '</span></div>';
 
                  if (mob.drops && mob.drops.length > 0) {
                      html += '<div class="mob-detail" style="margin-top:6px;"><span class="label">Drops:</span></div><div class="loot-table">';
@@ -606,7 +611,7 @@
                 card.innerHTML =
                     '<div class="mod-card-icon">' + mod.emoji + '</div>' +
                     '<div class="mod-title">' + mod.title + '</div>' +
-                    '<div class="mod-version">v' + mod.ver + '</div>' +
+                    '<div class="mod-version">v' + mod.ver + ' &middot; ' + mod.dl + ' baixadas</div>' +
                     '<div class="mod-desc">' + mod.desc + '</div>' +
                     '<div class="mod-tags">' + tagsHtml + '</div>' +
                     '<button class="mc-btn" style="width:100%;font-size:9px;padding:8px;">BAIXAR DIRETO</button>';
