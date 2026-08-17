@@ -194,6 +194,7 @@
       }
     });
     bones.forEach(function (b) {
+      if (b.neverRender) return;
       var entry = map[b.name];
       var g = entry.group;
       if (b.rotation) {

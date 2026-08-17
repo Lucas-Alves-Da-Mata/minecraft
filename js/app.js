@@ -59,9 +59,10 @@
         var tabs = document.querySelectorAll('.mc-tab');
         tabs.forEach(function(tab) {
             tab.addEventListener('click', function() {
+                var target = tab.dataset.tab;
+                if (!target) return;
                 tabs.forEach(function(t) { t.classList.remove('active'); });
                 tab.classList.add('active');
-                var target = tab.dataset.tab;
                 document.querySelectorAll('.tab-content').forEach(function(s) { s.classList.remove('active'); });
                 var el = document.getElementById('tab-' + target);
                 if (el) el.classList.add('active');
@@ -500,7 +501,8 @@
                  fctx.fillStyle = '#fff';
                  fctx.fillText(mob.emoji, 100, 65);
 
-                 card.addEventListener('click', function () {
+                 card.addEventListener('click', function (e) {
+                     if (e.target.classList.contains('mob-preview-3d')) return;
                      window.location.href = 'mob.html?id=' + encodeURIComponent(mob.id);
                  });
 
@@ -607,7 +609,7 @@
                     '<div class="mod-version">v' + mod.ver + '</div>' +
                     '<div class="mod-desc">' + mod.desc + '</div>' +
                     '<div class="mod-tags">' + tagsHtml + '</div>' +
-                    '<button class="mc-btn" style="width:100%;font-size:9px;padding:8px;">DOWNLOAD DIRECT</button>';
+                    '<button class="mc-btn" style="width:100%;font-size:9px;padding:8px;">BAIXAR DIRETO</button>';
                 var btn = card.querySelector('.mc-btn');
                 if (btn) btn.addEventListener('click', function() { showToast('Download de ' + mod.title + ' iniciado!', 'success'); });
                 grid.appendChild(card);
