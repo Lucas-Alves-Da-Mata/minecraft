@@ -21,6 +21,15 @@
         { id:'warden', name:'Guardião', cat:'hostile', desc:'Guardião cego das profundezas. Letal!', biome:'Ancient Cities', threat:10, tl:'high', emoji:'👁️', drops:[{i:'Catálise Sculk',c:'100%'}] }
     ];
 
+    window.MCHub = window.MCHub || {};
+    window.MCHub.MOBS_DATA = MOBS_DATA;
+    window.MCHub.findMobById = function (id) {
+        for (var i = 0; i < MOBS_DATA.length; i++) {
+            if (MOBS_DATA[i].id === id) return MOBS_DATA[i];
+        }
+        return null;
+    };
+
     var MODS_DATA = [
         { id:'optifine', title:'OptiFine', ver:'1.21', type:'performance', desc:'Otimização gráfica completa. Suporte a shaders e zoom.', loader:'Forge,Fabric', dl:'45M+', emoji:'⚡' },
         { id:'create', title:'Create', ver:'1.20', type:'tech', desc:'Automação mecânica criativa com engrenagens e correias.', loader:'Forge', dl:'12M+', emoji:'⚙️' },
@@ -473,18 +482,22 @@
                 prev.className = 'mob-card-preview';
                 prev.innerHTML = '<span class="rotate-hint">ARRASTE PARA GIRAR 360°</span>';
 
-                var fc = document.createElement('canvas');
-                fc.className = 'mob-preview-fallback';
-                fc.width = 200; fc.height = 130;
-                prev.appendChild(fc);
-                var fctx = fc.getContext('2d');
-                fctx.fillStyle = '#000';
-                fctx.fillRect(0, 0, 200, 130);
-                fctx.font = '48px monospace';
-                fctx.textAlign = 'center';
-                fctx.textBaseline = 'middle';
-                fctx.fillStyle = '#fff';
-                fctx.fillText(mob.emoji, 100, 65);
+                 var fc = document.createElement('canvas');
+                 fc.className = 'mob-preview-fallback';
+                 fc.width = 200; fc.height = 130;
+                 prev.appendChild(fc);
+                 var fctx = fc.getContext('2d');
+                 fctx.fillStyle = '#000';
+                 fctx.fillRect(0, 0, 200, 130);
+                 fctx.font = '48px monospace';
+                 fctx.textAlign = 'center';
+                 fctx.textBaseline = 'middle';
+                 fctx.fillStyle = '#fff';
+                 fctx.fillText(mob.emoji, 100, 65);
+
+                 card.addEventListener('click', function () {
+                     window.location.href = 'mob.html?id=' + encodeURIComponent(mob.id);
+                 });
 
                 if (use3D() && mobTabVisible()) {
                     var vc = document.createElement('canvas');
@@ -495,20 +508,37 @@
                         if (vc.parentNode) vc.parentNode.removeChild(vc);
                     });
                     viewers.push(viewer);
+
+                    (function(mobId) {
+                        var sx = 0, sy = 0;
+                        vc.addEventListener('pointerdown', function(e) { sx = e.clientX; sy = e.clientY; });
+                        vc.addEventListener('pointerup', function(e) {
+                            if (Math.abs(e.clientX - sx) < 5 && Math.abs(e.clientY - sy) < 5) {
+                                window.location.href = 'mob.html?id=' + encodeURIComponent(mobId);
+                            }
+                        });
+                    })(mob.id);
                 }
 
-                var html = '<div class="mob-name">' + mob.name + '</div>';
-                html += '<div class="mob-desc">' + mob.desc + '</div>';
-                html += '<div class="mob-detail"><span class="label">Bioma:</span> ' + mob.biome + '</div>';
-                html += '<div class="mob-detail"><span class="label">Threat Level:</span> <span class="mob-threat ' + mob.tl + '">' + mob.threat + '/10</span></div>';
+                 var catLabel = mob.cat === 'passive'? 'Passivo' : mob.cat === 'hostile'? 'Hostil' : 'Neutro';
+                 var html = '<div class="mob-card-header">';
+                 html += '<span class="mob-emoji-small">' + mob.emoji + '</span>';
+                 html += '<span class="mob-name">' + mob.name + '</span>';
+                 html += '<span class="mob-category-badge mob-cat-' + mob.cat + '">' + catLabel + '</span>';
+                 html += '</div>';
+                 html += '<div class="mob-desc">' + mob.desc + '</div>';
+                 html += '<div class="mob-detail"><span class="label">Bioma:</span> ' + mob.biome + '</div>';
+                 html += '<div class="mob-detail"><span class="label">Threat:</span> <span class="mob-threat ' + mob.tl + '">' + mob.threat + '/10</span></div>';
 
-                if (mob.drops && mob.drops.length > 0) {
-                    html += '<div class="mob-detail" style="margin-top:6px;"><span class="label">Drops:</span></div><div class="loot-table">';
-                    mob.drops.forEach(function(d) {
-                        html += '<div class="loot-slot">' + d.i.charAt(0) + '<span class="chance">' + d.c + '</span></div>';
-                    });
-                    html += '</div>';
-                }
+                 if (mob.drops && mob.drops.length > 0) {
+                     html += '<div class="mob-detail" style="margin-top:6px;"><span class="label">Drops:</span></div><div class="loot-table">';
+                     mob.drops.forEach(function(d) {
+                         html += '<div class="loot-slot">' + d.i.charAt(0) + '<span class="chance">' + d.c + '</span></div>';
+                     });
+                     html += '</div>';
+                 } else {
+                     html += '<div class="mob-detail" style="margin-top:6px;"><span class="label">Drops:</span> <span style="color:var(--mc-text-dim);">nenhum</span></div>';
+                 }
 
                 card.appendChild(prev);
                 card.insertAdjacentHTML('beforeend', html);
