@@ -3,120 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Minecraft Hub - Gerenciador de Skins, Mobs e Mods para Minecraft">
+  <meta name="theme-color" content="#0d0520">
   <title>Minecraft Hub</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body class="mc-theme">
-  <canvas id="bg-canvas"></canvas>
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-  <header class="mc-header">
+  <header class="mc-header" role="banner">
     <div class="logo-container">
       <h1 class="mc-logo">MINECRAFT HUB</h1>
-      <span class="splash-text">NOVAS ATUALIZAÇÕES!</span>
+      <span class="splash-text" aria-hidden="true">NOVAS ATUALIZACOES!</span>
     </div>
-    <nav class="mc-nav">
-      <button class="mc-tab active" data-tab="home">[HOME]</button>
-      <button class="mc-tab" data-tab="skins">[SKINS]</button>
-      <button class="mc-tab" data-tab="mobs">[MOBS]</button>
-      <button class="mc-tab" data-tab="mods">[MODS]</button>
+    <nav class="mc-nav" role="navigation" aria-label="Navegacao principal">
+      <button class="mc-tab active" data-tab="home" aria-selected="true">[HOME]</button>
+      <button class="mc-tab" data-tab="skins" aria-selected="false">[SKINS]</button>
+      <button class="mc-tab" data-tab="mobs" aria-selected="false">[MOBS]</button>
+      <button class="mc-tab" data-tab="mods" aria-selected="false">[MODS]</button>
     </nav>
   </header>
 
-  <main id="app-content">
+  <main id="app-content" role="main">
 
-    <!-- ==================== HOME ==================== -->
-    <section id="tab-home" class="tab-content active">
+    <!-- HOME -->
+    <section id="tab-home" class="tab-content active" aria-label="Pagina inicial">
       <div class="grid-3col">
-        <aside class="mc-panel">
+        <aside class="mc-panel" aria-label="Amigos online e galeria">
           <h3>AMIGOS ONLINE</h3>
-          <ul class="friend-list">
-            <li><span class="dot green"></span> Steve_Miner</li>
-            <li><span class="dot green"></span> Alex_Explorer</li>
-            <li><span class="dot green"></span> Herobrine_01</li>
-            <li><span class="dot green"></span> Creeper_Avoider</li>
-            <li><span class="dot green"></span> Diamond_Hunter</li>
+          <ul class="friend-list" aria-label="Lista de amigos online">
+            <li><span class="dot green" aria-hidden="true"></span> Steve_Miner</li>
+            <li><span class="dot green" aria-hidden="true"></span> Alex_Explorer</li>
+            <li><span class="dot green" aria-hidden="true"></span> Herobrine_01</li>
+            <li><span class="dot green" aria-hidden="true"></span> Creeper_Avoider</li>
+            <li><span class="dot green" aria-hidden="true"></span> Diamond_Hunter</li>
           </ul>
           <h3>GALERIA</h3>
-          <div class="gallery-grid">
-            <div class="gallery-item">SS</div>
-            <div class="gallery-item">SS</div>
-            <div class="gallery-item">SS</div>
-            <div class="gallery-item">SS</div>
+          <div class="gallery-grid" aria-label="Galeria de capturas de tela">
+            <div class="gallery-item" role="img" aria-label="Captura de tela 1"></div>
+            <div class="gallery-item" role="img" aria-label="Captura de tela 2"></div>
+            <div class="gallery-item" role="img" aria-label="Captura de tela 3"></div>
+            <div class="gallery-item" role="img" aria-label="Captura de tela 4"></div>
           </div>
         </aside>
 
-        <section class="mc-panel center-panel">
+        <section class="mc-panel center-panel" aria-label="Painel central">
           <div class="status-bar">
-            <span class="dot green"></span> Status do Servidor: <span class="text-green">Online</span>
+            <span class="dot green" aria-hidden="true"></span> Status do Servidor: <span class="text-green">Online</span>
           </div>
-          <button class="mc-btn primary btn-jogar">▶ JOGAR</button>
-          <button class="mc-btn btn-opcoes">OPÇÕES</button>
-          <button class="mc-btn marketplace btn-market">
-            <span class="mc-icon">⛏</span>
+          <button class="mc-btn primary btn-jogar" aria-label="Jogar no servidor">JOGAR</button>
+          <button class="mc-btn btn-opcoes" aria-label="Abrir opcoes">OPCOES</button>
+          <button class="mc-btn marketplace btn-market" aria-label="Abrir marketplace">
+            <span class="mc-icon" aria-hidden="true">⛏</span>
             MARKETPLACE
-            <span class="mc-icon">⬡</span>
+            <span class="mc-icon" aria-hidden="true">⬡</span>
           </button>
         </section>
 
-        <aside class="mc-panel">
-          <h3>ÚLTIMAS NOTÍCIAS</h3>
-          <div class="news-list">
-            <div class="news-item">
+        <aside class="mc-panel" aria-label="Noticias e visualizador de personagem">
+          <h3>ULTIMAS NOTICIAS</h3>
+          <div class="news-list" aria-label="Lista de noticias">
+            <div class="news-item" tabindex="0" role="button">
               <div class="news-date">15 JUL 2026</div>
-              <div class="news-title">Update 1.21 lançado com novas câmaras de teste!</div>
+              <div class="news-title">Update 1.21 lancado com novas camaras de teste!</div>
             </div>
-            <div class="news-item">
+            <div class="news-item" tabindex="0" role="button">
               <div class="news-date">10 JUL 2026</div>
               <div class="news-title">Novas variantes de mobs adicionadas ao mundo</div>
             </div>
-            <div class="news-item">
+            <div class="news-item" tabindex="0" role="button">
               <div class="news-date">05 JUL 2026</div>
-              <div class="news-title">Melhorias de performance e correções de bugs</div>
+              <div class="news-title">Melhorias de performance e correcoes de bugs</div>
             </div>
           </div>
-          <div id="player-3d">
-            <canvas></canvas>
-            <span class="rotate-hint">🖱 ARRASTE PARA GIRAR 360°</span>
+          <div id="player-3d" aria-label="Visualizador 3D do personagem">
+            <canvas aria-hidden="true"></canvas>
+            <span class="rotate-hint" aria-hidden="true">ARRASTE PARA GIRAR 360</span>
           </div>
-          <button class="mc-btn primary btn-vestiario">🎽 VESTIÁRIO</button>
+          <button class="mc-btn primary btn-vestiario" aria-label="Trocar personagem no vestiario">VESTIARIO</button>
         </aside>
       </div>
     </section>
 
-    <!-- ==================== SKINS ==================== -->
-    <section id="tab-skins" class="tab-content">
+    <!-- SKINS -->
+    <section id="tab-skins" class="tab-content" aria-label="Skins em destaque">
       <div class="section-header">
         <h2>SKINS EM DESTAQUE</h2>
       </div>
-      <div class="featured-skins-grid">
-        <div class="mc-panel skin-card">
-          <div class="skin-preview"></div>
+      <div class="featured-skins-grid" role="list" aria-label="Skins disponiveis">
+        <div class="mc-panel skin-card" role="listitem">
+          <div class="skin-preview" aria-label="Preview da skin Cavaleiro de Pedra"></div>
           <div class="skin-name">Cavaleiro de Pedra</div>
-          <div class="skin-stars">⭐⭐⭐⭐⭐ 4.8</div>
+          <div class="skin-stars" aria-label="Avaliacao 4.8 de 5 estrelas">4.8</div>
           <div class="skin-downloads">12.4k baixadas</div>
-          <button class="mc-btn primary" style="width:100%;">BAIXAR</button>
+          <button class="mc-btn primary" style="width:100%;" aria-label="Baixar skin Cavaleiro de Pedra">BAIXAR</button>
         </div>
-        <div class="mc-panel skin-card">
-          <div class="skin-preview"></div>
+        <div class="mc-panel skin-card" role="listitem">
+          <div class="skin-preview" aria-label="Preview da skin Hoodie Guy"></div>
           <div class="skin-name">Hoodie Guy</div>
-          <div class="skin-stars">⭐⭐⭐⭐⭐ 4.6</div>
+          <div class="skin-stars" aria-label="Avaliacao 4.6 de 5 estrelas">4.6</div>
           <div class="skin-downloads">8.7k baixadas</div>
-          <button class="mc-btn primary" style="width:100%;">BAIXAR</button>
+          <button class="mc-btn primary" style="width:100%;" aria-label="Baixar skin Hoodie Guy">BAIXAR</button>
         </div>
-        <div class="mc-panel skin-card">
-          <div class="skin-preview"></div>
+        <div class="mc-panel skin-card" role="listitem">
+          <div class="skin-preview" aria-label="Preview da skin Zumbi"></div>
           <div class="skin-name">Zumbi</div>
-          <div class="skin-stars">⭐⭐⭐⭐ 4.3</div>
+          <div class="skin-stars" aria-label="Avaliacao 4.3 de 5 estrelas">4.3</div>
           <div class="skin-downloads">6.2k baixadas</div>
-          <button class="mc-btn primary" style="width:100%;">BAIXAR</button>
+          <button class="mc-btn primary" style="width:100%;" aria-label="Baixar skin Zumbi">BAIXAR</button>
         </div>
-        <div class="mc-panel skin-card">
-          <div class="skin-preview"></div>
+        <div class="mc-panel skin-card" role="listitem">
+          <div class="skin-preview" aria-label="Preview da skin Creeper"></div>
           <div class="skin-name">Creeper</div>
-          <div class="skin-stars">⭐⭐⭐⭐⭐ 4.9</div>
+          <div class="skin-stars" aria-label="Avaliacao 4.9 de 5 estrelas">4.9</div>
           <div class="skin-downloads">15.1k baixadas</div>
-          <button class="mc-btn primary" style="width:100%;">BAIXAR</button>
+          <button class="mc-btn primary" style="width:100%;" aria-label="Baixar skin Creeper">BAIXAR</button>
         </div>
       </div>
 
@@ -124,66 +128,66 @@
         <h2>EDITOR DE SKIN</h2>
       </div>
       <div class="mc-panel editor-container">
-        <div class="editor-toolbar">
+        <div class="editor-toolbar" role="toolbar" aria-label="Ferramentas do editor">
           <div class="toolbar-group">
             <label class="mc-btn tool-btn" style="padding:6px 10px;font-size:10px;">
-              🎨<input type="color" id="color-picker" value="#55aaff" style="display:none;">
+              <span aria-hidden="true">🎨</span><input type="color" id="color-picker" value="#55aaff" style="display:none;" aria-label="Seletor de cor">
             </label>
-            <button class="mc-btn tool-btn active" data-tool="pencil" style="padding:6px 10px;font-size:10px;">✏️</button>
-            <button class="mc-btn tool-btn" data-tool="eraser" style="padding:6px 10px;font-size:10px;">🧹</button>
-            <button class="mc-btn tool-btn" data-tool="fill" style="padding:6px 10px;font-size:10px;">🪣</button>
-            <button class="mc-btn tool-btn" data-tool="eyedropper" style="padding:6px 10px;font-size:10px;">💉</button>
+            <button class="mc-btn tool-btn active" data-tool="pencil" style="padding:6px 10px;font-size:10px;" aria-label="Lapis" aria-pressed="true">✏️</button>
+            <button class="mc-btn tool-btn" data-tool="eraser" style="padding:6px 10px;font-size:10px;" aria-label="Borracha" aria-pressed="false">🧹</button>
+            <button class="mc-btn tool-btn" data-tool="fill" style="padding:6px 10px;font-size:10px;" aria-label="Balde de tinta" aria-pressed="false">🪣</button>
+            <button class="mc-btn tool-btn" data-tool="eyedropper" style="padding:6px 10px;font-size:10px;" aria-label="Conta-gotas" aria-pressed="false">💉</button>
           </div>
-          <div class="toolbar-group">
-            <button class="mc-btn tool-btn layer-btn active" data-layer="base" style="padding:6px 10px;font-size:9px;">BASE</button>
-            <button class="mc-btn tool-btn layer-btn" data-layer="overlay" style="padding:6px 10px;font-size:9px;">SOBREPOSIÇÃO</button>
+          <div class="toolbar-group" role="radiogroup" aria-label="Camada ativa">
+            <button class="mc-btn tool-btn layer-btn active" data-layer="base" style="padding:6px 10px;font-size:9px;" role="radio" aria-checked="true">BASE</button>
+            <button class="mc-btn tool-btn layer-btn" data-layer="overlay" style="padding:6px 10px;font-size:9px;" role="radio" aria-checked="false">SOBREPOSICAO</button>
           </div>
         </div>
         <div class="editor-main">
           <div class="editor-canvas-wrap">
-            <canvas id="skin-editor-canvas" width="512" height="512"></canvas>
+            <canvas id="skin-editor-canvas" width="512" height="512" aria-label="Canvas do editor de skin" role="img"></canvas>
           </div>
           <div class="editor-preview-wrap">
-            <div class="preview-label">VISUALIZAÇÃO 3D</div>
-            <div class="editor-preview" id="skin-preview-3d">
-              <canvas></canvas>
+            <div class="preview-label">VISUALIZACAO 3D</div>
+            <div class="editor-preview" id="skin-preview-3d" aria-label="Preview da skin editada">
+              <canvas aria-hidden="true"></canvas>
             </div>
           </div>
         </div>
         <div class="editor-actions">
-          <button class="mc-btn primary" id="btn-export-skin">EXPORTAR PNG</button>
-          <button class="mc-btn" id="btn-clear-skin">LIMPAR</button>
+          <button class="mc-btn primary" id="btn-export-skin" aria-label="Exportar skin como PNG">EXPORTAR PNG</button>
+          <button class="mc-btn" id="btn-clear-skin" aria-label="Limpar canvas do editor">LIMPAR</button>
         </div>
       </div>
     </section>
 
-    <!-- ==================== MOBS ==================== -->
-    <section id="tab-mobs" class="tab-content">
+    <!-- MOBS -->
+    <section id="tab-mobs" class="tab-content" aria-label="Catalogo de mobs">
       <div class="section-header">
         <h2>GUIA DE MOBS</h2>
       </div>
-      <div class="mc-panel mob-filters">
-        <button class="mc-btn mob-filter-btn active" data-filter="all" style="padding:6px 14px;">TODOS</button>
-        <button class="mc-btn mob-filter-btn" data-filter="passive" style="padding:6px 14px;">PASSIVOS</button>
-        <button class="mc-btn mob-filter-btn" data-filter="neutral" style="padding:6px 14px;">NEUTROS</button>
-        <button class="mc-btn mob-filter-btn" data-filter="hostile" style="padding:6px 14px;">HOSTIS</button>
+      <div class="mc-panel mob-filters" role="toolbar" aria-label="Filtros de mobs">
+        <button class="mc-btn mob-filter-btn active" data-filter="all" style="padding:6px 14px;" aria-pressed="true">TODOS</button>
+        <button class="mc-btn mob-filter-btn" data-filter="passive" style="padding:6px 14px;" aria-pressed="false">PASSIVOS</button>
+        <button class="mc-btn mob-filter-btn" data-filter="neutral" style="padding:6px 14px;" aria-pressed="false">NEUTROS</button>
+        <button class="mc-btn mob-filter-btn" data-filter="hostile" style="padding:6px 14px;" aria-pressed="false">HOSTIS</button>
         <div class="search-wrap">
-          <input type="text" class="mc-input" id="mob-search" placeholder="BUSCAR MOB...">
+          <input type="search" class="mc-input" id="mob-search" placeholder="BUSCAR MOB..." aria-label="Buscar mob">
         </div>
       </div>
-      <div class="mob-grid" id="mob-grid"></div>
+      <div class="mob-grid" id="mob-grid" role="list" aria-label="Lista de mobs"></div>
     </section>
 
-    <!-- ==================== MODS ==================== -->
-    <section id="tab-mods" class="tab-content">
+    <!-- MODS -->
+    <section id="tab-mods" class="tab-content" aria-label="Central de mods">
       <div class="section-header">
         <h2>CENTRAL DE MODS</h2>
       </div>
       <div class="mc-panel mods-filters">
         <div class="mods-filter-row">
           <div class="filter-group">
-            <label>VERSÃO</label>
-            <select class="mc-select" id="filter-version">
+            <label for="filter-version">VERSAO</label>
+            <select class="mc-select" id="filter-version" aria-label="Filtrar por versao">
               <option value="all">Todas</option>
               <option value="1.21">1.21</option>
               <option value="1.20">1.20</option>
@@ -194,19 +198,19 @@
             </select>
           </div>
           <div class="filter-group">
-            <label>TIPO</label>
-            <select class="mc-select" id="filter-type">
+            <label for="filter-type">TIPO</label>
+            <select class="mc-select" id="filter-type" aria-label="Filtrar por tipo">
               <option value="all">Todos</option>
               <option value="performance">Performance</option>
               <option value="tech">Tecnologia</option>
-              <option value="decoration">Decoração</option>
-              <option value="dimensions">Dimensões</option>
+              <option value="decoration">Decoracao</option>
+              <option value="dimensions">Dimensoes</option>
               <option value="mobs">Mobs</option>
             </select>
           </div>
           <div class="filter-group">
-            <label>ORDENAR POR</label>
-            <select class="mc-select" id="filter-sort">
+            <label for="filter-sort">ORDENAR POR</label>
+            <select class="mc-select" id="filter-sort" aria-label="Ordenar mods">
               <option value="popular">Popularidade</option>
               <option value="recent">Mais Recentes</option>
               <option value="downloads">Downloads</option>
@@ -214,28 +218,46 @@
           </div>
         </div>
         <div class="search-wrap" style="max-width:100%;">
-          <input type="text" class="mc-input" id="mod-search" placeholder="BUSCAR MOD...">
+          <input type="search" class="mc-input" id="mod-search" placeholder="BUSCAR MOD..." aria-label="Buscar mod">
         </div>
       </div>
-      <div class="mods-grid" id="mods-grid"></div>
+      <div class="mods-grid" id="mods-grid" role="list" aria-label="Lista de mods"></div>
     </section>
 
   </main>
 
-  <footer class="mc-footer">
+  <footer class="mc-footer" role="contentinfo">
     <div class="footer-left">
-      <button class="mc-btn" style="padding:6px 14px;font-size:10px;">Entrar</button>
-      <button class="mc-btn" style="padding:6px;font-size:10px;">🧪</button>
-      <span class="footer-copy">©Mojang AB. Marcas registradas de seus respectivos proprietários.</span>
+      <button class="mc-btn" style="padding:6px 14px;font-size:10px;" aria-label="Fazer login">Entrar</button>
+      <button class="mc-btn" style="padding:6px;font-size:10px;" aria-label="Diagnosticos do sistema">🧪</button>
+      <span class="footer-copy">&copy;Mojang AB. Marcas registradas de seus respectivos proprietarios.</span>
     </div>
     <div class="footer-right">
       <span class="footer-version">v1.17.30 / v.L28.12 Hub Ver 2.1</span>
     </div>
   </footer>
 
+  <script>
+    // CDN Fallbacks
+    (function() {
+      function loadScript(src, fallback) {
+        var s = document.createElement('script');
+        s.src = src;
+        s.onerror = function() {
+          if (fallback) {
+            var f = document.createElement('script');
+            f.src = fallback;
+            document.body.appendChild(f);
+          }
+        };
+        document.body.appendChild(s);
+      }
+    })();
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script>
+  <script src="js/constants.js"></script>
   <script src="js/mob3d.data.js"></script>
   <script src="js/mob3d.tex.js"></script>
   <script src="js/mob3d.js"></script>

@@ -1,18 +1,9 @@
-/* ============================================================
-   Mob3D — Renderiza mobs do Minecraft em 3D (rotação 360°) nos cards
-   - Lê modelos Bedrock (.geo.json) embutidos em mob3d.data.js
-   - Lê texturas PNG locais (assets/mobs/textures)
-   - Convenção (padrão Bedrock -> Three.js):
-       * Z negado (Bedrock "south" = +Z  ->  three.js -Z)
-       * rotações de osso: (+rx, -ry, -rz), ordem Euler ZYX
-       * box UV: tira lateral [west][north][east][south]
-   ============================================================ */
 (function () {
   'use strict';
 
+  var C = window.MCHub.CONST;
   var ASSETS = 'assets/mobs/';
 
-  // Geometria/textura por mob. geo = null => primeira geometria do arquivo.
   var CONFIG = {
     axolotl:    { tex: 'textures/axolotl.png' },
     chicken:    { geo: 'geometry.chicken.v1.12', tex: 'textures/chicken.png' },
@@ -33,8 +24,8 @@
     zombie:     { geo: 'geometry.zombie.v1.8', tex: 'textures/zombie.png' }
   };
 
-  var _images = {};   // caminho da textura -> Promise<Image>
-  var _built = {};    // slug -> Promise<THREE.Group>
+  var _images = {};
+  var _built = {};
 
   function loadImage(url) {
     return new Promise(function (resolve, reject) {
@@ -68,7 +59,6 @@
       }
       return list[0] || null;
     }
-    // formato antigo (1.8.0): as chaves são os ids de geometria
     var keys = Object.keys(parsed).filter(function (k) { return k !== 'format_version'; });
     if (geoId && parsed[geoId]) return parsed[geoId];
     return keys.length ? parsed[keys[0]] : null;
@@ -83,16 +73,14 @@
     };
   }
 
-  /* Regiões box UV por face (ordem THREE.BoxGeometry: px,nx,py,ny,pz,nz).
-     Mirror troca east<->west e espelha horizontalmente todas as faces. */
   function boxUVRects(u, v, dx, dy, dz, mirror) {
     var rects = [
-      { x: u + dz + dx, y: v + dz, w: dz, h: dy },            // east  (+X)
-      { x: u,           y: v + dz, w: dz, h: dy },            // west  (-X)
-      { x: u + dz,      y: v,      w: dx, h: dz },            // up    (+Y)
-      { x: u + dz + dx, y: v,      w: dx, h: dz },            // down  (-Y)
-      { x: u + dz,      y: v + dz, w: dx, h: dy },            // north (+Z)
-      { x: u + dz + dx + dz, y: v + dz, w: dx, h: dy }        // south (-Z)
+      { x: u + dz + dx, y: v + dz, w: dz, h: dy },
+      { x: u,           y: v + dz, w: dz, h: dy },
+      { x: u + dz,      y: v,      w: dx, h: dz },
+      { x: u + dz + dx, y: v,      w: dx, h: dz },
+      { x: u + dz,      y: v + dz, w: dx, h: dy },
+      { x: u + dz + dx + dz, y: v + dz, w: dx, h: dy }
     ];
     if (mirror) {
       var tmp = rects[0]; rects[0] = rects[1]; rects[1] = tmp;
@@ -222,7 +210,7 @@
     if (_built[slug]) return _built[slug];
     var cfg = CONFIG[slug];
     var parsed = window.MOB3D_MODELS[slug];
-    if (!parsed) return Promise.reject(new Error('Modelo não encontrado: ' + slug));
+    if (!parsed) return Promise.reject(new Error('Modelo nao encontrado: ' + slug));
     var layers = layersOf(cfg);
     var p = Promise.all(layers.map(function (l) { return getTexture(l.tex); }))
       .then(function (imgs) {
@@ -247,8 +235,6 @@
     return p;
   }
 
-  /* ============ Viewer ============ */
-
   function MobViewer(canvas, slug, onError) {
     var self = this;
     this.slug = slug;
@@ -256,18 +242,19 @@
     this.disposed = false;
     this.onError = onError;
     this.userRot = false;
+    this._rafId = null;
 
     var parent = canvas.parentElement;
     var w = canvas.clientWidth || (parent ? parent.clientWidth : 0) || 270;
     var h = canvas.clientHeight || (parent ? parent.clientHeight : 0) || 130;
 
     this.renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false, alpha: true });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, C.MOB3D_PIXEL_RATIO_MAX));
     this.renderer.setClearColor(0x000000, 1);
     this.renderer.setSize(w, h, false);
 
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(32, w / h, 0.01, 100);
+    this.camera = new THREE.PerspectiveCamera(C.MOB3D_FOV, w / h, 0.01, 100);
 
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.75));
     var d1 = new THREE.DirectionalLight(0xffffff, 0.9);
@@ -284,14 +271,16 @@
     this.model = new THREE.Group();
     this.scene.add(this.model);
 
-    canvas.addEventListener('pointerdown', function () { self.userRot = true; });
-    window.addEventListener('pointerup', function () {
+    this._onPointerDown = function () { self.userRot = true; };
+    this._onPointerUp = function () {
       setTimeout(function () { self.userRot = false; }, 500);
-    });
+    };
+    canvas.addEventListener('pointerdown', this._onPointerDown);
+    window.addEventListener('pointerup', this._onPointerUp);
 
     if (window.ResizeObserver) {
-      this.ro = new ResizeObserver(function () { self.resize(); });
-      this.ro.observe(parent || canvas);
+      this._ro = new ResizeObserver(function () { self.resize(); });
+      this._ro.observe(parent || canvas);
     }
 
     this._tick();
@@ -308,8 +297,8 @@
     var self = this;
     function loop() {
       if (self.disposed) return;
-      requestAnimationFrame(loop);
-      if (!self.userRot) self.model.rotation.y += 0.01;
+      self._rafId = requestAnimationFrame(loop);
+      if (!self.userRot) self.model.rotation.y += C.MOB3D_ROTATION_SPEED;
       self.controls.update();
       self.renderer.render(self.scene, self.camera);
     }
@@ -325,7 +314,7 @@
     box.getSize(size);
     var maxDim = Math.max(size.x, size.y, size.z) || 1;
     var fov = this.camera.fov * Math.PI / 180;
-    var dist = (maxDim / 2) / Math.tan(fov / 2) * 1.45;
+    var dist = (maxDim / 2) / Math.tan(fov / 2) * C.MOB3D_FIT_FACTOR;
     this.model.position.set(-center.x, 0, -center.z);
     this.controls.target.set(0, center.y, 0);
     this.camera.position.set(0, center.y + size.y * 0.12, dist);
@@ -346,10 +335,20 @@
     this.camera.updateProjectionMatrix();
   };
 
+  MobViewer.prototype.setSize = function (w, h) {
+    if (this.disposed) return;
+    this.renderer.setSize(w, h, false);
+    this.camera.aspect = w / h;
+    this.camera.updateProjectionMatrix();
+  };
+
   MobViewer.prototype.dispose = function () {
     if (this.disposed) return;
     this.disposed = true;
-    if (this.ro) this.ro.disconnect();
+    if (this._rafId) { cancelAnimationFrame(this._rafId); this._rafId = null; }
+    if (this._ro) { this._ro.disconnect(); this._ro = null; }
+    this.canvas.removeEventListener('pointerdown', this._onPointerDown);
+    window.removeEventListener('pointerup', this._onPointerUp);
     this.controls.dispose();
     this.scene.traverse(function (o) {
       if (o.geometry) o.geometry.dispose();

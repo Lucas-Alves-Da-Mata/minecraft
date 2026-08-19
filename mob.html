@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Detalhes do Mob - Minecraft Hub">
+  <meta name="theme-color" content="#0d0520">
   <title>Mob - Minecraft Hub</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     .mob-detail-grid {
@@ -59,50 +63,47 @@
     }
   </style>
 </head>
-  <body class="mc-theme">
-  <canvas id="bg-canvas"></canvas>
+<body class="mc-theme">
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-  <header class="mc-header">
+  <header class="mc-header" role="banner">
     <div class="logo-container">
       <h1 class="mc-logo">MINECRAFT HUB</h1>
-      <span class="splash-text">NOVAS ATUALIZAÇÕES!</span>
+      <span class="splash-text" aria-hidden="true">NOVAS ATUALIZACOES!</span>
     </div>
-    <nav class="mc-nav">
+    <nav class="mc-nav" role="navigation" aria-label="Navegacao principal">
       <a href="index.html"><button type="button" class="mc-tab">[HOME]</button></a>
       <a href="index.html#skins"><button type="button" class="mc-tab">[SKINS]</button></a>
-      <a href="index.html#mobs"><button type="button" class="mc-tab active">[MOBS]</button></a>
+      <a href="index.html#mobs"><button type="button" class="mc-tab active" aria-current="page">[MOBS]</button></a>
       <a href="index.html#mods"><button type="button" class="mc-tab">[MODS]</button></a>
     </nav>
   </header>
 
-  <main id="app-content">
-    <section id="tab-mobs" class="tab-content active">
+  <main id="app-content" role="main">
+    <section id="tab-mobs" class="tab-content active" aria-label="Detalhes do mob">
       <div class="section-header">
         <h2>DETALHES DO MOB</h2>
       </div>
       <div class="mc-panel" id="mob-detail-root">
-        <div id="mob-detail-error" style="display:none;color:var(--mc-red);font-size:12px;">
-          Mob não encontrado. <a href="index.html#mobs">Voltar para os mobs</a>.
+        <div id="mob-detail-error" style="display:none;color:var(--mc-red);font-size:12px;" role="alert">
+          Mob nao encontrado. <a href="index.html#mobs">Voltar para os mobs</a>.
         </div>
 
         <div class="mob-detail-grid" id="mob-detail-grid" style="display:none;">
-          <!-- coluna 1: preview 3D -->
           <div class="mob-preview-wrap">
-            <canvas id="mob-detail-canvas"></canvas>
-            
+            <canvas id="mob-detail-canvas" aria-label="Visualizador 3D do mob"></canvas>
           </div>
 
-          <!-- coluna 2: detalhes -->
           <div class="mob-detail-meta">
             <div class="mob-card-header" style="margin-bottom:0.8rem;">
-              <span class="mob-emoji-small" id="mob-detail-emoji"></span>
+              <span class="mob-emoji-small" id="mob-detail-emoji" aria-hidden="true"></span>
               <h1 id="mob-detail-title" style="margin:0;"></h1>
               <span class="mob-category-badge" id="mob-detail-category"></span>
             </div>
 
             <div class="mob-stat"><span class="label">Bioma:</span> <span id="mob-detail-biome"></span></div>
             <div class="mob-stat"><span class="label">Categoria:</span> <span id="mob-detail-cat-name"></span></div>
-            <div class="mob-stat"><span class="label">Nível de Ameaça:</span>
+            <div class="mob-stat"><span class="label">Nivel de Ameaca:</span>
               <span class="mob-threat" id="mob-detail-threat"></span>
             </div>
             <div class="mob-stat" id="mob-detail-threatbar"></div>
@@ -112,7 +113,7 @@
             <div id="mob-detail-drops-wrap"></div>
 
             <div class="mob-back">
-              <a href="index.html#mobs"><button type="button" class="mc-btn">← VOLTAR AOS MOBS</button></a>
+              <a href="index.html#mobs"><button type="button" class="mc-btn">VOLTAR AOS MOBS</button></a>
             </div>
           </div>
         </div>
@@ -120,9 +121,9 @@
     </section>
   </main>
 
-  <footer class="mc-footer">
+  <footer class="mc-footer" role="contentinfo">
     <div class="footer-left">
-      <span class="footer-copy">©Mojang AB. Marcas registradas de seus respectivos proprietários.</span>
+      <span class="footer-copy">&copy;Mojang AB. Marcas registradas de seus respectivos proprietarios.</span>
     </div>
     <div class="footer-right">
       <span class="footer-version">v1.17.30 / v.L28.12 Hub Ver 2.1</span>
@@ -132,6 +133,7 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.2/bundles/skinview3d.bundle.js"></script>
+  <script src="js/constants.js"></script>
   <script src="js/mob3d.data.js"></script>
   <script src="js/mob3d.tex.js"></script>
   <script src="js/mob3d.js"></script>

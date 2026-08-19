@@ -1,6 +1,8 @@
 (function () {
   'use strict';
 
+  var formatCategory = window.MCHub.formatCategory;
+
   function getQueryParam(name) {
     var params = new URLSearchParams(window.location.search);
     return params.get(name);
@@ -19,18 +21,22 @@
     var canvas = qs('#mob-detail-canvas');
     if (!canvas) return;
     if (typeof window.Mob3D === 'undefined' || !window.Mob3D.available()) {
-      if (canvas.style) canvas.style.backgroundImage = 'url(https://mc-heads.net/body/' + encodeURIComponent(mobId) + '/256)';
+      setFallbackBg(canvas, mobId);
       return;
     }
-    var viewer = window.Mob3D.createViewer(canvas, mobId, function (err) {
-      var fb = qs('#mob-detail-canvas');
-      if (fb && fb.style) fb.style.backgroundImage = 'url(https://mc-heads.net/body/' + encodeURIComponent(mobId) + '/256)';
-      if (fb && fb.style) fb.style.backgroundSize = 'contain';
-      if (fb && fb.style) fb.style.backgroundRepeat = 'no-repeat';
-      if (fb && fb.style) fb.style.backgroundPosition = 'center';
-      if (fb) fb.style.backgroundColor = 'rgba(0,0,0,0.4)';
+    var viewer = window.Mob3D.createViewer(canvas, mobId, function () {
+      setFallbackBg(qs('#mob-detail-canvas'), mobId);
     });
     return viewer;
+  }
+
+  function setFallbackBg(el, mobId) {
+    if (!el || !el.style) return;
+    el.style.backgroundImage = 'url(https://mc-heads.net/body/' + encodeURIComponent(mobId) + '/256)';
+    el.style.backgroundSize = 'contain';
+    el.style.backgroundRepeat = 'no-repeat';
+    el.style.backgroundPosition = 'center';
+    el.style.backgroundColor = 'rgba(0,0,0,0.4)';
   }
 
   function buildDrops(drops) {
@@ -56,11 +62,11 @@
 
     qs('#mob-detail-title').textContent = mob.name;
     qs('#mob-detail-emoji').textContent = mob.emoji;
-    var catLabel = mob.cat === 'passive' ? 'Passivo' : mob.cat === 'hostile' ? 'Hostil' : 'Neutro';
+    var catLabel = formatCategory(mob.cat);
     qs('#mob-detail-category').textContent = catLabel;
     qs('#mob-detail-category').className = 'mob-category-badge mob-cat-' + mob.cat;
     qs('#mob-detail-biome').textContent = mob.biome;
-    qs('#mob-detail-cat-name').textContent = (mob.cat === 'passive' ? 'Passivo' : mob.cat === 'hostile' ? 'Hostil' : 'Neutro');
+    qs('#mob-detail-cat-name').textContent = catLabel;
     qs('#mob-detail-desc').textContent = mob.desc;
     buildDrops(mob.drops);
 
@@ -72,8 +78,8 @@
     if (threatBar) {
       var t = Math.max(0, Math.min(10, Number(mob.threat) || 0));
       var cells = '';
-      for (var i = 0; i < 10; i++) cells += i < t ? '■' : '□';
-      threatBar.innerHTML = '<span class="label">Perigo:</span> <span class="mob-threat ' + (mob.tl || 'low') + '">' + cells + '</span>';
+      for (var i = 0; i < 10; i++) cells += i < t ? '\u25a0' : '\u25a1';
+      threatBar.innerHTML = '<span class="label">Perigo:</span> <span class="mob-threat ' + (mob.tl || 'low') + '" role="img" aria-label="Nivel de perigo ' + t + ' de 10">' + cells + '</span>';
     }
 
     initViewer(mob.id);
@@ -93,7 +99,6 @@
     }
     if (!mob) {
       if (id && safeId(id)) {
-        // geometry/textures exist but data missing -> fallback render
         render({
           id: id, name: id.toUpperCase(), cat: 'neutral',
           desc: 'Detalhes indisponiveis.', biome: '-',
